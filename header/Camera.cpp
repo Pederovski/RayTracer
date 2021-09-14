@@ -15,7 +15,6 @@ void Camera::render()
 		}
 	}
 
-
 	//transfer pixel data from cameraplane to 
 	EasyBMP::Image img(SIZE, SIZE);
 	for (int i = 0; i < SIZE; i++) {
