@@ -2,6 +2,7 @@
 #include "Triangle.h"
 #include "Ray.h"
 #include <list>
+
 class Scene {
 public:
 	Scene() {

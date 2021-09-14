@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="header\Camera.cpp" />
     <ClCompile Include="header\Scene.cpp" />
+    <ClCompile Include="header\Triangle.cpp" />
     <ClCompile Include="RayTracer.cpp" />
   </ItemGroup>
   <ItemGroup>
