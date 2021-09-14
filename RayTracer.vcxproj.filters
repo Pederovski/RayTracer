@@ -44,13 +44,13 @@
     <ClInclude Include="header\Ray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="header\Triangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
