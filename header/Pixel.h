@@ -5,11 +5,9 @@
 
 class Pixel {
 public:
-	Pixel(Color color, Ray& ray) :
+	Pixel(const Color&  color, const Ray& ray) :
 		c{ color }, r{ ray } {}
 
 	Color c;
 	Ray r;
-private:
-
 };

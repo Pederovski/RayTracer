@@ -1,7 +1,7 @@
 #pragma once
 #include "Triangle.h"
 #include "Ray.h"
-#include <list>
+#include <vector>
 
 class Scene {
 public:
@@ -15,6 +15,6 @@ private:
 
 	void createScene();
 
-	std::list<Triangle> triangleList;
+	std::vector<Triangle> triangleList;
 
 };

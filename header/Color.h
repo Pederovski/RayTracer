@@ -4,10 +4,9 @@
 
 class Color {   
 public:
-	Color(glm::dvec3& color) : color{ color } {}
-		Color(double r, double g, double b) : color{ glm::dvec3{r,g,b} } {}
-
-		Color() : color{ glm::dvec3{1,1,1} } {};
+	Color(const glm::dvec3& color) : color{ color } {}
+	Color(double r, double g, double b) : color{ glm::dvec3{r,g,b} } {}
+	Color() : color{ glm::dvec3{255, 255, 255} } {}; //default white
 	     
 	glm::dvec3 color;
 };
