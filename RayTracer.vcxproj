@@ -19,10 +19,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="header\Camera.cpp" />
+    <ClCompile Include="header\Scene.cpp" />
     <ClCompile Include="RayTracer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyBMP.hpp" />
+    <ClInclude Include="header\Camera.h" />
+    <ClInclude Include="header\Color.h" />
+    <ClInclude Include="header\Direction.h" />
+    <ClInclude Include="header\Ray.h" />
+    <ClInclude Include="header\Scene.h" />
+    <ClInclude Include="header\Triangle.h" />
+    <ClInclude Include="header\Vertex.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="header\Pixel.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
