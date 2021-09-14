@@ -1,10 +1,15 @@
 #include <iostream>
 #include <glm/glm.hpp>
-#include "EasyBMP.hpp"
+#include "header/Vertex.h"
+#include "header/Camera.h"
 
 int main()
 {
-    EasyBMP::Image img();
+    Vertex eye1 = Vertex{ -2, 0, 0 };
+    Vertex eye2 = Vertex{ -1, 0,0 };
+    Camera cam = Camera(eye1, eye2);
+
+    cam.render();
 
     glm::mat4 proj;
 

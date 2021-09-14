@@ -5,11 +5,11 @@
 
 class Pixel {
 public:
-
 	Pixel(Color color, Ray& ray) :
 		c{ color }, r{ ray } {}
 
-private:
 	Color c;
-	Ray& r;
+	Ray r;
+private:
+
 };

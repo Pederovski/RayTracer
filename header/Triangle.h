@@ -8,13 +8,14 @@
 class Triangle{
 public:
 
+	Triangle() = default;
 	Triangle(Vertex vertex1, Vertex vertex2, Vertex vertex3, Color color, Direction normal) :
-		v1{vertex1}, v2{vertex2}, v3{vertex3}, c{color}, n{normal} {}
+		v1{vertex1}, v2{vertex2}, v3{vertex3}, color{color}, n{normal} {}
 
 	Vertex rayIntersection(Ray arg);
 
 private:
 	Vertex v1, v2, v3;
-	Color c;
+	Color color;
 	Direction n;
 };
