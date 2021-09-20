@@ -14,15 +14,20 @@ float Triangle::rayIntersection(const Ray& ray)
 	glm::vec3 E2 = glm::vec3{ e2.x, e2.y, e2.z };
 	glm::vec3 D = glm::vec3{ d.x, d.y, d.z };
 
+	D = glm::normalize(D); //normalize or nah ? 
+
 	float dotproduct = glm::dot(normal.direction, D);
+	if (dotproduct > 0) //larger or equals than 0? 
+		return NOT_FOUND;
 
 
 	auto P = glm::cross(D, E2);
 	auto Q = glm::cross(T, E1);
+	auto PE1 = glm::dot(P, E1);
 
-	auto t = glm::dot(Q, E2) / glm::dot(P, E1);
-	auto u = glm::dot(P, T) / glm::dot(P, E1);
-	auto v = glm::dot(Q, D) / glm::dot(P, E1);
+	auto t = glm::dot(Q, E2) / PE1;
+	auto u = glm::dot(P, T) / PE1;
+	auto v = glm::dot(Q, D) / PE1;
 
 	if (u >= 0 && v >= 0 && (u + v) <= 1) {
 		//auto res = ray.startPoint.position + t * (ray.endPoint.position - ray.startPoint.position);
@@ -30,7 +35,4 @@ float Triangle::rayIntersection(const Ray& ray)
 	}
 	else
 		return NOT_FOUND; //the function caller has to delete the allocated memory
-
-
-	
 }
