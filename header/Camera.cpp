@@ -5,16 +5,16 @@
 void Camera::render(Scene &_scene)
 {
 	Color c{ 255, 0.0, 0.0 };
-	Vertex v1{ 0,0,0 };
-	Vertex v2{ 0,0,0 };
-	Ray ray{ v1,v2,c };
+	//Vertex v1{ 0,0,0 };
+	//Vertex v2{ 0,0,0 };
+	//Ray ray{ v1,v2,c };
 
 	//Changes all pixel colors to red
-	for (int i = 0; i < SIZE; i++) {
-		for (int j = 0; j < SIZE; j++) {
-			cameraplane[index(i, j)] = Pixel{ c,ray };
-		}
-	}
+	//for (int i = 0; i < SIZE; i++) {
+	//	for (int j = 0; j < SIZE; j++) {
+	//		cameraplane[index(i, j)].c.color = c.color;
+	//	}
+	//}
 	
 	//
 	for (int i = 0; i < SIZE; i++) {
