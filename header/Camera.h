@@ -9,10 +9,10 @@
 const int SIZE = 800;
 class Camera {
 public:
-	Camera(Vertex& e1, Vertex& e2) : eye1{ e1 }, eye2{ e2 } {
+	Camera(Vertex& e1, Vertex& e2, bool useEye1 = true) : eye1{ e1 }, eye2{ e2 } {
 		std::cout << SIZE << "\n";
 		cameraplane.reserve(SIZE * SIZE);
-		float delta = 2 / SIZE; //pixel size width, height
+		float delta = 2.0f / SIZE; //pixel size width, height
 
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
@@ -29,7 +29,7 @@ public:
 	int index(int x, int y);
 
 private:
-	bool useEye1 = true; //change to false to use eye2
+	//bool useEye1 = true; //change to false to use eye2
 
 	Vertex eye1, eye2;
 	std::vector<Pixel> cameraplane;
