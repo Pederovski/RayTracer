@@ -9,9 +9,11 @@ int main()
     Vertex eye2 = Vertex{ -1, 0,0 };
     Camera cam = Camera(eye1, eye2);
 
-    cam.render();
+    Scene s;
+
+    cam.render(s);
 
     glm::mat4 proj;
 
-    std::cout << "Yes";
+    std::cout << "Yes" << "\n" << "Japp";
 }

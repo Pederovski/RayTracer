@@ -9,7 +9,7 @@ public:
 		createScene();
 	}
 
-	void triangleIntersection(const Ray& ray); //return ref or ptr instead to save copying time
+	Color triangleIntersection(const Ray& ray); //return ref or ptr instead to save copying time
 
 private:
 

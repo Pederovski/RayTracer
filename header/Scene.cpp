@@ -1,8 +1,21 @@
 #include "Scene.h"
 
-void Scene::triangleIntersection(const Ray& ray)
+Color Scene::triangleIntersection(const Ray& ray)
 {
-	
+	float minT = 100000;
+	Color outcolor;
+
+	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
+	for (int i = 0; i < triangleList.size(); i++) {
+		float t = triangleList[i].rayIntersection(ray); //här får vi ut massa tvärden
+		if (t != NOT_FOUND && t < minT) {
+			minT = t;
+			outcolor = triangleList[i].color.color;
+		}
+		//checka om vårt t är mindre än nuvarande sparade t -> kopplad till en viss ray its tsame rayyyy!!!!!
+	}
+	//här har vi då ett t värde och vi kan räkna ut en endpoint -> färgvärde på den pixeln från triangeln
+	return outcolor;
 }
 
 void Scene::createScene()
@@ -24,7 +37,7 @@ void Scene::createScene()
 	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 255, 0 }); 
 
 	//Bottom right diagonal
-	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 13,-6,-5 }, Color{ 255, 0, 0 }); 
+	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }); 
 	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0}); 
 
 	//Bottom left diagonal

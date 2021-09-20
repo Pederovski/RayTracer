@@ -3,6 +3,7 @@
 #include "Pixel.h"
 #include <vector>
 #include <iostream>
+#include "Scene.h"
 
 
 const int SIZE = 800;
@@ -11,18 +12,18 @@ public:
 	Camera(Vertex& e1, Vertex& e2) : eye1{ e1 }, eye2{ e2 } {
 		std::cout << SIZE << "\n";
 		cameraplane.reserve(SIZE * SIZE);
-		float offset = 2 / SIZE; //pixel size width, height
+		float delta = 2 / SIZE; //pixel size width, height
 
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
 				//Calculate direction vector from eyepoint to the pixel
-				Vertex cameraplaneEndPoint = Vertex{ 0, i * offset - (1 - offset ), j * offset - (1 - offset) };
+				Vertex cameraplaneEndPoint = Vertex{ 0, i * delta - (1 - delta ), j * delta - (1 - delta) };
 				Ray dir = Ray{ useEye1 ? eye1 : eye2, cameraplaneEndPoint };
 				cameraplane.push_back(Pixel{ Color{}, dir });
 			}
 		}
 	}
-	void render();
+	void render(Scene& scene);
 
 
 	int index(int x, int y);
