@@ -23,7 +23,7 @@ public:
 		normal.direction = glm::cross(u, v);
 
 		normal.direction = glm::normalize(normal.direction);
-		print();
+		//print();
 	}
 
 	/// <summary>
