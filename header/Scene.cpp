@@ -1,9 +1,10 @@
 #include "Scene.h"
 
-Color Scene::triangleIntersection(const Ray& ray)
+Color Scene::triangleIntersection(Ray& ray)
 {
-	float minT = 100000;
+	float minT = NOT_FOUND;
 	Color outcolor;
+	Direction intersectionNormal;
 
 	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
 	for (int i = 0; i < triangleList.size(); i++) {
@@ -11,9 +12,27 @@ Color Scene::triangleIntersection(const Ray& ray)
 		if (t != NOT_FOUND && t < minT) {
 			minT = t;
 			outcolor = triangleList[i].color.color;
+			intersectionNormal.direction = triangleList[i].normal.direction;
 		}
-		//checka om vårt t är mindre än nuvarande sparade t -> kopplad till en viss ray its tsame rayyyy!!!!!
 	}
+	//loopa igenom alla spheres (en atm sphere)
+	float d = sceneSphere.rayIntersection(ray);
+	if (d != NOT_FOUND && d < minT) {
+		minT = d;
+		outcolor = sceneSphere.color;
+	}
+
+	//save intersection point between ray and first surface hit
+	glm::vec4 intersectionPoint = ray.startPoint.position + minT * (ray.endPoint.position - ray.startPoint.position);
+	ray.intersectionPoint = glm::vec3(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z);
+
+	//if we intersected the sphere, calc normal in that position.
+	if (d == minT)
+		intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
+
+	//Shoot shadow ray 
+	//Ray shadowRay{ glm::vec4{ray.intersectionPoint,1.0}, glm::vec4{sceneLight.position, 1.0} };
+	
 	//här har vi då ett t värde och vi kan räkna ut en endpoint -> färgvärde på den pixeln från triangeln
 	return outcolor;
 }
@@ -76,4 +95,14 @@ void Scene::createScene()
 	triangleList.push_back(t18);
 	triangleList.push_back(t19);
 	triangleList.push_back(t20);
+
+	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2, Color{ 0, 150, 200 });
+
+	Tetrahedron T{ Color{ 130.0,30.0,150.0 } };
+	for (const Triangle& t : T.sides)
+	{
+		triangleList.push_back(t);
+	}
+	
+	sceneLight = Lightsrc{ 1, glm::dvec3{1, 1, 1}, glm::vec3{5, 0, 5} };
 }

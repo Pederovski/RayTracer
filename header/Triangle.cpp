@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-float Triangle::rayIntersection(const Ray& ray)
+float Triangle::rayIntersection(Ray& ray)
 {
 	
 	auto t1 = ray.startPoint.position - v1.position;

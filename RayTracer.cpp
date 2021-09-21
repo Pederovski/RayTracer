@@ -15,6 +15,7 @@ int main()
 
     Scene s;
 
+
     cam.render(s);
 
     auto end = std::chrono::steady_clock::now();

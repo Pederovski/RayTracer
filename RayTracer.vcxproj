@@ -29,10 +29,13 @@
     <ClInclude Include="header\Camera.h" />
     <ClInclude Include="header\Color.h" />
     <ClInclude Include="header\Direction.h" />
+    <ClInclude Include="header\lightsrc.h" />
     <ClInclude Include="header\Ray.h" />
     <ClInclude Include="header\Scene.h" />
     <ClInclude Include="header\Triangle.h" />
     <ClInclude Include="header\Vertex.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="Tetrahedron.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="header\Pixel.h" />

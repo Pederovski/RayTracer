@@ -5,7 +5,8 @@
 #include "Color.h"
 #include "Ray.h"
 #include <iostream>
-const float NOT_FOUND = 100000000;
+const float NOT_FOUND = std::numeric_limits<float>::max();
+;
 
 class Triangle {
 public:
@@ -30,7 +31,7 @@ public:
 	/// Returns t value if there is an intersection between this triangle and the ray 
 	/// Müller trumbone algorithm
 	/// </summary>
-	float rayIntersection(const Ray& ray);
+	float rayIntersection( Ray& ray);
 
 	void print() {
 		std::cout <<
@@ -42,8 +43,9 @@ public:
 	}
 	
 	Color color;
+	Direction normal;
+
 
 private:
 	Vertex v1, v2, v3;
-	Direction normal;
 };
