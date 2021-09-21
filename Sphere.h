@@ -11,13 +11,11 @@ public:
 		center{ c }, radius{ r }, color{ clr } {}
 
 	float rayIntersection(const Ray& ray){
-		glm::vec3 startpoint{ ray.startPoint.position.x, ray.startPoint.position.y, ray.startPoint.position.z };
-		glm::vec4 direction = ray.endPoint.position - ray.startPoint.position;
-		glm::vec3 dir{ direction.x, direction.y, direction.z };
+		glm::vec3 dir = ray.endPoint.position - ray.startPoint.position;
 		dir = glm::normalize(dir); //l i lecture notes
 
-		float b = 2 * glm::dot(dir, startpoint - center);
-		float c = glm::dot(startpoint - center, startpoint - center) - radius * radius;
+		float b = 2 * glm::dot(dir, ray.startPoint.position - center);
+		float c = glm::dot(ray.startPoint.position - center, ray.startPoint.position - center) - (radius * radius);
 
 		float underroot = (b / 2) * (b / 2) - c;
 		if (underroot < 0) //imaginary root 

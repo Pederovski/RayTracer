@@ -1,12 +1,13 @@
 #pragma once
-#include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
 
 class Vertex {
 public:
-	Vertex(glm::vec4& _pos) : position{ _pos } {}
-	Vertex(float x, float y, float z, float w = 1.0f) : position{ glm::vec4{x,y,z,w} } {}
+	Vertex(glm::vec3& _pos, float _w = 1.0) : position{ _pos }, w{ _w } {}
+	Vertex(float x, float y, float z, float _w = 1.0f) : position{ glm::vec3{x,y,z} }, w{ _w } {}
 
-	glm::vec4 position;
+	glm::vec3 position;
+	float w; //homogenus coordinate
 private:
 
 };

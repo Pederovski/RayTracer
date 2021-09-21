@@ -9,7 +9,7 @@ public:
 		startPoint{ start }, endPoint{ end }, rayColor{ c } {
 		/*endPointLocation = _loc ? new Triangle{*_loc} : nullptr ; */
 	}
-	Ray() : startPoint{ 0,0,0,0 }, endPoint{ 0,0,0,0 }, rayColor{ 0,0,0 }, intersectionPoint{ 0,0,0 } {}
+	Ray() = default;
 
 	//Ray(const Ray& r) : startPoint{ r.startPoint }, endPoint{ r.endPoint }, rayColor{ r.rayColor } {
 	//	endPointLocation = r.endPointLocation ? new Triangle{ *r.endPointLocation } : nullptr;

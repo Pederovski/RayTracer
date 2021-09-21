@@ -23,8 +23,8 @@ Color Scene::triangleIntersection(Ray& ray)
 	}
 
 	//save intersection point between ray and first surface hit
-	glm::vec4 intersectionPoint = ray.startPoint.position + minT * (ray.endPoint.position - ray.startPoint.position);
-	ray.intersectionPoint = glm::vec3(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z);
+	ray.intersectionPoint = ray.startPoint.position + minT * (ray.endPoint.position - ray.startPoint.position);
+	//ray.intersectionPoint = glm::vec3(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z);
 
 	//if we intersected the sphere, calc normal in that position.
 	if (d == minT)
