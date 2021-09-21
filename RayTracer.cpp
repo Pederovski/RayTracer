@@ -22,6 +22,5 @@ int main()
     std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
 
-    //glm::mat4 proj;
-    //std::cout << "Yes" << "\n" << "Japp";
+    std::cout << "Yes" << "\n" << "Japp";
 }

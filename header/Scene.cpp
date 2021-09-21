@@ -24,14 +24,13 @@ Color Scene::triangleIntersection(Ray& ray)
 
 	//save intersection point between ray and first surface hit
 	ray.intersectionPoint = ray.startPoint.position + minT * (ray.endPoint.position - ray.startPoint.position);
-	//ray.intersectionPoint = glm::vec3(intersectionPoint.x, intersectionPoint.y, intersectionPoint.z);
 
 	//if we intersected the sphere, calc normal in that position.
 	if (d == minT)
 		intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
 
 	//Shoot shadow ray 
-	//Ray shadowRay{ glm::vec4{ray.intersectionPoint,1.0}, glm::vec4{sceneLight.position, 1.0} };
+	Ray shadowRay{ ray.intersectionPoint, sceneLight.position };
 	
 	//här har vi då ett t värde och vi kan räkna ut en endpoint -> färgvärde på den pixeln från triangeln
 	return outcolor;

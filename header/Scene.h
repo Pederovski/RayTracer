@@ -19,6 +19,7 @@ public:
 		triangleList.push_back(t);
 	}
 
+	Lightsrc sceneLight;
 
 private:
 
@@ -26,5 +27,4 @@ private:
 
 	std::vector<Triangle> triangleList;
 	Sphere sceneSphere;
-	Lightsrc sceneLight;
 };
