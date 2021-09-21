@@ -1,9 +1,11 @@
 #include "Scene.h"
+#define _USE_MATH_DEFINES 
+#include <math.h>
 
 Color Scene::triangleIntersection(Ray& ray)
 {
 	float minT = NOT_FOUND;
-	Color outcolor;
+	Color pointSurfaceColor;
 	Direction intersectionNormal;
 
 	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
@@ -11,7 +13,7 @@ Color Scene::triangleIntersection(Ray& ray)
 		float t = triangleList[i].rayIntersection(ray); //här får vi ut massa tvärden
 		if (t != NOT_FOUND && t < minT) {
 			minT = t;
-			outcolor = triangleList[i].color.color;
+			pointSurfaceColor = triangleList[i].color.color;
 			intersectionNormal.direction = triangleList[i].normal.direction;
 		}
 	}
@@ -19,7 +21,7 @@ Color Scene::triangleIntersection(Ray& ray)
 	float d = sceneSphere.rayIntersection(ray);
 	if (d != NOT_FOUND && d < minT) {
 		minT = d;
-		outcolor = sceneSphere.color;
+		pointSurfaceColor = sceneSphere.color;
 	}
 
 	//save intersection point between ray and first surface hit
@@ -31,9 +33,22 @@ Color Scene::triangleIntersection(Ray& ray)
 
 	//Shoot shadow ray 
 	Ray shadowRay{ ray.intersectionPoint, sceneLight.position };
-	
-	//här har vi då ett t värde och vi kan räkna ut en endpoint -> färgvärde på den pixeln från triangeln
-	return outcolor;
+	//direction from intersectionpoint to light src
+	glm::vec3 shadowRayDirection = shadowRay.endPoint.position - shadowRay.startPoint.position; 
+	float r = glm::length(shadowRayDirection); //length of shadowray
+	 //inclination angle, negative values are clamped to 0 
+	double cosTheta = std::max((double)glm::dot(shadowRayDirection, intersectionNormal.direction) / r, 0.0);
+	double solidAngle = sceneLight.crossSection / (r*r);
+
+	glm::dvec3 irradiance = solidAngle * sceneLight.radiance * cosTheta;
+
+	double rho = 1.0f; //reflectivity constant
+	//Emitted radiosity 
+	glm::dvec3 Lr = rho * irradiance / M_PI;
+	//multiply surface color with emitted radiosity
+	pointSurfaceColor.color = glm::vec3(pointSurfaceColor.color.r * Lr.r, pointSurfaceColor.color.g * Lr.g, pointSurfaceColor.color.b * Lr.b);
+
+	return pointSurfaceColor;
 }
 
 void Scene::createScene()

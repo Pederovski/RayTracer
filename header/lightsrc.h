@@ -8,8 +8,8 @@ public:
 		crossSection{_crossSection}, radiance{_radiance}, position{_position} {}
 
 	glm::vec3 position;
-
-private:
 	float crossSection;
 	glm::dvec3 radiance;
+private:
+	
 };
