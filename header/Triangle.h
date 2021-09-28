@@ -5,15 +5,26 @@
 #include "Color.h"
 #include "Ray.h"
 #include <iostream>
+
 const float NOT_FOUND = std::numeric_limits<float>::max();
-;
+
+struct BRDF {
+	BRDF(bool w = true) : wall{ w } {}
+
+	bool isWall() {
+		return wall;
+	}
+
+	//parameters for the brdf
+	bool wall;
+};
 
 class Triangle {
 public:
 	Triangle() = default;
 
-	Triangle(const Vertex&  vertex1, const Vertex& vertex2, const Vertex&  vertex3, const Color& color) :
-		v1{ vertex1 }, v2{ vertex2 }, v3{ vertex3 }, color{ color } {
+	Triangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const Color& color, const BRDF _brdf = BRDF{}) :
+		v1{ vertex1 }, v2{ vertex2 }, v3{ vertex3 }, color{ color }, brdf{ _brdf } {
 		//Calculate normal direction by cross product of the triangle sides
 		auto p1 = v1.position;
 		auto p2 = v2.position;
@@ -31,7 +42,7 @@ public:
 	/// Returns t value if there is an intersection between this triangle and the ray 
 	/// Müller trumbone algorithm
 	/// </summary>
-	float rayIntersection( Ray& ray);
+	float rayIntersection(Ray& ray);
 
 	void print() {
 		std::cout <<
@@ -44,6 +55,7 @@ public:
 	
 	Color color;
 	Direction normal;
+	BRDF brdf;
 
 
 private:

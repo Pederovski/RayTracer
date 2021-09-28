@@ -4,7 +4,7 @@
 
 Color Scene::triangleIntersection(Ray& ray)
 {
-	float minT = NOT_FOUND;
+	float minT = NOT_FOUND; //minimum t value found => closest triangle intersection
 	Color pointSurfaceColor;
 	Direction intersectionNormal;
 
@@ -13,8 +13,11 @@ Color Scene::triangleIntersection(Ray& ray)
 		float t = triangleList[i].rayIntersection(ray); //här får vi ut massa tvärden
 		if (t != NOT_FOUND && t < minT) {
 			minT = t;
-			pointSurfaceColor = triangleList[i].color.color;
-			intersectionNormal.direction = triangleList[i].normal.direction;
+			ray.intersectionTriangle = &triangleList[i];
+			pointSurfaceColor = ray.intersectionTriangle->color.color;
+			intersectionNormal.direction = ray.intersectionTriangle->normal.direction;
+			//pointSurfaceColor = triangleList[i].color.color;
+			//intersectionNormal.direction = triangleList[i].normal.direction;
 		}
 	}
 	//loopa igenom alla spheres (en atm sphere)
@@ -22,6 +25,7 @@ Color Scene::triangleIntersection(Ray& ray)
 	if (d != NOT_FOUND && d < minT) {
 		minT = d;
 		pointSurfaceColor = sceneSphere.color;
+		ray.intersectionTriangle = nullptr;
 	}
 
 	//save intersection point between ray and first surface hit
@@ -30,6 +34,16 @@ Color Scene::triangleIntersection(Ray& ray)
 	//if we intersected the sphere, calc normal in that position.
 	if (d == minT)
 		intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
+
+	
+
+	//calc reflection ray if obj
+	//btree.insertreflection(currentNode, reflectionray);
+	//scene.triangleIntersection(reflectionray, currnode = currenode->reflection)
+
+	//calc refraction ray if transparent
+	//btree.insertrefractionray(currentNode, refractionray);
+	//scene.triangleIntersection(refractionray);
 
 	//Shoot shadow ray 
 	Ray shadowRay{ ray.intersectionPoint, sceneLight.position };

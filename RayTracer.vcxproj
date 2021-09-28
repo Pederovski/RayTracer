@@ -20,12 +20,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="header\Camera.cpp" />
+    <ClCompile Include="header\Ray.cpp" />
     <ClCompile Include="header\Scene.cpp" />
     <ClCompile Include="header\Triangle.cpp" />
     <ClCompile Include="RayTracer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyBMP.hpp" />
+    <ClInclude Include="header\Btree.h" />
     <ClInclude Include="header\Camera.h" />
     <ClInclude Include="header\Color.h" />
     <ClInclude Include="header\Direction.h" />

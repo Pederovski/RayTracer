@@ -12,10 +12,10 @@ public:
 		Vertex v3{ 6, 1, -2 };
 		Vertex v4{ 6.5, 3.5, 2 };
 
-		Triangle t1{ v1, v2, v3, c };
-		Triangle t2{ v1, v3, v4, c };
-		Triangle t3{ v1, v4, v2, c };
-		Triangle t4{ v2, v4, v3, c };
+		Triangle t1{ v1, v2, v3, c, false};
+		Triangle t2{ v1, v3, v4, c, false};
+		Triangle t3{ v1, v4, v2, c, false};
+		Triangle t4{ v2, v4, v3, c, false};
 
 		sides.push_back(t1);
 		sides.push_back(t2);

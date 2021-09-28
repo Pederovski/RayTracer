@@ -6,6 +6,7 @@
 #include "Tetrahedron.h"
 #include "lightsrc.h"
 
+
 class Scene {
 public:
 	Scene() {

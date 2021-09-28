@@ -2,6 +2,8 @@
 #include "Vertex.h"
 #include "Color.h"
 
+class Triangle;  //forward that declaration yo
+
 class Ray {
 public:
 	
@@ -11,27 +13,29 @@ public:
 	}
 	Ray() = default;
 
-	//Ray(const Ray& r) : startPoint{ r.startPoint }, endPoint{ r.endPoint }, rayColor{ r.rayColor } {
-	//	endPointLocation = r.endPointLocation ? new Triangle{ *r.endPointLocation } : nullptr;
-	//}
+	//copy constructor
+	Ray(const Ray& r);
 
-	//~Ray() {
-	//	delete endPointLocation;
-	//}
+	~Ray() {
+		intersectionTriangle = nullptr; //is this memory leak? 
+	}
 
-	////copy swap idiom
-	//Ray& operator=(Ray rhs) {
-	//	std::swap(endPointLocation, rhs.endPointLocation);
-	//	std::swap(startPoint, rhs.startPoint);
-	//	std::swap(endPoint, rhs.endPoint);
-	//	std::swap(rayColor, rhs.rayColor);
-	//	return *this;
-	//}
+	//copy swap idiom
+	Ray& operator=(Ray rhs) {
+		std::swap(intersectionTriangle, rhs.intersectionTriangle);
+		std::swap(startPoint, rhs.startPoint);
+		std::swap(endPoint, rhs.endPoint);
+		std::swap(rayColor, rhs.rayColor);
+		std::swap(intersectionPoint, rhs.intersectionPoint);
+		return *this;
+	}
 
 	Vertex startPoint, endPoint;
 	Color rayColor; // is this the radiance
 	//ref to triangle on which endpoint is located
 	glm::vec3 intersectionPoint;
+
+	Triangle* intersectionTriangle = nullptr;
 	//eventuellt inkludera importance i ray obj
 
 private:
