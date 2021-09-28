@@ -2,13 +2,15 @@
 #include "header/Vertex.h"
 #include "header/Ray.h"
 #include "header/Color.h"
+#include "header/Triangle.h"
 
 class Sphere {
 public:
 	Sphere() = default;
 
-	Sphere(const glm::vec3& c, float r, const Color& clr) :
-		center{ c }, radius{ r }, color{ clr } {}
+	Sphere(const glm::vec3& c, float r, const Color& clr, const BRDF& _brdf) :
+		center{ c }, radius{ r }, color{ clr }, brdf{ _brdf }  {}
+
 
 	float rayIntersection(const Ray& ray){
 		glm::vec3 dir = ray.endPoint.position - ray.startPoint.position;
@@ -31,4 +33,5 @@ public:
 	glm::vec3 center;
 	float radius;
 	Color color;
+	BRDF brdf;
 };
