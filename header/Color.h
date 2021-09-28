@@ -6,7 +6,7 @@ class Color {
 public:
 	Color(const glm::dvec3& color) : color{ color } {}
 	Color(double r, double g, double b) : color{ glm::dvec3{r,g,b} } {}
-	Color() : color{ glm::dvec3{255, 255, 255} } {}; //default white
+	Color() : color{ glm::dvec3{0, 0, 0} } {}; //default color
 	     
 	glm::dvec3 color;
 };
