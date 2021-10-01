@@ -13,7 +13,7 @@ public:
 		createScene();
 	}
 
-	Color triangleIntersection(Ray& ray); //return ref or ptr instead to save copying time
+	Color triangleIntersection(Ray& ray, int c = 0); //return ref or ptr instead to save copying time
 
 
 	void AddTriangle(const Triangle t) {
