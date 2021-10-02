@@ -7,7 +7,7 @@ float Triangle::rayIntersection(Ray& ray)
 	glm::vec3 E2 = v3.position - v1.position;
 	glm::vec3 D = ray.endPoint.position - ray.startPoint.position;
 
-	//D= glm::normalize(D); //normalize or nah ? 
+	//D = glm::normalize(D); //normalize or nah ? 
 	
 	auto dotproduct = glm::dot(normal.direction, glm::normalize(D));
 	if (dotproduct >= 0) //larger or equals than 0? 

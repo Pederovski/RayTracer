@@ -7,10 +7,10 @@
 class Tetrahedron {
 public:
 	Tetrahedron(const Color& c) {
-		Vertex v1{ 5, 3, -2 };
-		Vertex v2{ 7, 5, -2 };
-		Vertex v3{ 6, 1, -2 };
-		Vertex v4{ 6.5, 3.5, 2 };
+		Vertex v1{ 5, 1.5, -2 };
+		Vertex v2{ 7, 4.0, -2 };
+		Vertex v3{ 7, 0, -2 };
+		Vertex v4{ 6.5, 2, 2 };
 
 		Triangle t1{ v1, v2, v3, c, false};
 		Triangle t2{ v1, v3, v4, c, false};
