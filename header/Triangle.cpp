@@ -18,14 +18,17 @@ float Triangle::rayIntersection(Ray& ray)
 	auto Q = glm::cross(T, E1);
 	auto PE1 = glm::dot(P, E1);
 
-	auto t = glm::dot(Q, E2) / PE1;
-	auto u = glm::dot(P, T) / PE1;
-	auto v = glm::dot(Q, D) / PE1;
+	double t = glm::dot(Q, E2) / PE1;
+	double u = glm::dot(P, T) / PE1;
+	double v = glm::dot(Q, D) / PE1;
 
-	if (u >= 0 && v >= 0 && (u + v) <= 1) {
+	double epsilon = 1e-5;
+
+	if (u > -epsilon && v > -epsilon && (u + v) < 1 + epsilon) {
 		//auto res = ray.startPoint.position + t * (ray.endPoint.position - ray.startPoint.position);
 		return t;
 	}
-	else
+	else {
 		return NOT_FOUND; //the function caller has to delete the allocated memory
+	}
 }
