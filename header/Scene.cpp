@@ -202,7 +202,7 @@ void Scene::createScene()
 
 	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2, Color{ 0, 150, 200 }, false);
 
-	Tetrahedron T{ Color{ 253, 127, 249 } };
+	Tetrahedron T{ Color{ 253, 127, 249 }, false };
 	for (const Triangle& t : T.sides)
 	{
 		triangleList.push_back(t);
