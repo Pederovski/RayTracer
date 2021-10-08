@@ -21,7 +21,9 @@ Color Scene::triangleIntersection(Ray& ray, int depthcounter)
 		}
 	}
 	//save intersection point between ray and first triangle surface hit
-	ray.intersectionPoint = ray.startPoint.position + minimumT * glm::normalize(ray.endPoint.position - ray.startPoint.position);
+	ray.intersectionPoint = ray.startPoint.position + minimumT * (ray.endPoint.position - ray.startPoint.position);
+	//std::cout << " Intesection point main: " << ray.intersectionPoint.x << " " << ray.intersectionPoint.y << " " << ray.intersectionPoint.z
+	//	<< '\n';
 
 	//loopa igenom alla spheres (en atm sphere)
 	float d = sceneSphere.rayIntersection(ray);
@@ -98,7 +100,7 @@ Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, 
 			//calculate new ray dir with reflection law
 			glm::vec3 startp = ray.startPoint.position;
 			glm::vec3 endp = ray.intersectionPoint;
-			float offset = 0.25f;
+			float offset = 0.01f;
 			glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);  //going in the opposite direction
 
 			glm::vec3 incomingRayDir = correctedIntersectionEndPoint - ray.startPoint.position;

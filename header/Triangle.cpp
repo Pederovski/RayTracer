@@ -18,14 +18,16 @@ float Triangle::rayIntersection(Ray& ray)
 	auto Q = glm::cross(T, E1);
 	auto PE1 = glm::dot(P, E1);
 
-	double t = glm::dot(Q, E2) / PE1;
-	double u = glm::dot(P, T) / PE1;
-	double v = glm::dot(Q, D) / PE1;
+	float t = glm::dot(Q, E2) / PE1;
+	float u = glm::dot(P, T) / PE1;
+	float v = glm::dot(Q, D) / PE1;
 
-	double epsilon = 1e-5;
+	float epsilon = 1e-5;
 
 	if (u > -epsilon && v > -epsilon && (u + v) < 1 + epsilon) {
 		//auto res = ray.startPoint.position + t * (ray.endPoint.position - ray.startPoint.position);
+		//glm::vec3 point = (1 - u - v) * v1.position + u * v2.position + v * v3.position;
+		//std::cout << "Point from triangle intersect " << point.x << " " << point.y << " " << point.z << '\n';
 		return t;
 	}
 	else {
