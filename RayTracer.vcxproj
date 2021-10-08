@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="header\Btree.cpp" />
     <ClCompile Include="header\Camera.cpp" />
     <ClCompile Include="header\Ray.cpp" />
     <ClCompile Include="header\Scene.cpp" />

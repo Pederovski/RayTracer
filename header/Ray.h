@@ -33,10 +33,12 @@ public:
 	Vertex startPoint, endPoint;
 	Color rayColor; // is this the radiance
 	glm::vec3 intersectionPoint;
+	glm::vec3 intersectionNormal;
 
 	//ref to triangle on which endpoint is located
 	Triangle* intersectionTriangle = nullptr;
 	//eventuellt inkludera importance i ray obj
+	double importance = 1;
 
 private:
 

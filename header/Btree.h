@@ -1,29 +1,49 @@
 #pragma once
 #include "Ray.h"
-
+#include "Scene.h"
 
 
 class Btree {
 	class Node {
-		Node(const Ray& _ray, Node* _parent = nullptr, Node* l = nullptr, Node* r = nullptr) :
+	public:
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="_ray">ray to insert into tree</param>
+		/// <param name="_parent">parent node</param>
+		/// <param name="l">reflection node</param>
+		/// <param name="r">refraction node</param>
+		Node(Ray& _ray, Node* _parent = nullptr, Node* l = nullptr, Node* r = nullptr) :
 			parent{ _parent }, reflection{ l }, refraction{ r }, ray{ _ray } {}
+
+		~Node() {
+			delete reflection;
+			delete refraction;
+		}
 
 		Node* parent;
 		Node* reflection; //left
 		Node* refraction; //right
 
 		Ray ray;
-
-		//should node or btree delete ptrs?
 	};
-public:
-	Btree() {}
-	~Btree() {}
 
-	void insertReflection(Node* parent, Ray ray);
-	void insertRefraction(Node* parent, Ray ray);
+public:
+	Btree(Scene& _scene, Ray& _ray) :  scene{_scene}, root{ new Node{_ray} } { 
+		createTree(root, root->ray);
+	}
+	~Btree() {
+		delete root;
+	}
+
+	void insertRefraction(Node* parent, Ray& ray);
+	void insertReflection(Node* parent, Ray& ray);
+	void createTree(Node* ptr, Ray& ray);
+	Color computeColor(Node* node);
+	
+	Node* root;
 
 private:
-	Node* root = nullptr;
+	Scene& scene;
 
 };

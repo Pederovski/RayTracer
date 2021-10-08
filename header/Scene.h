@@ -14,7 +14,7 @@ public:
 		createScene();
 	}
 
-	Color triangleIntersection(Ray& ray, int c = 0); //return ref or ptr instead to save copying time
+	void triangleIntersection(Ray& ray, int c = 0); //return ref or ptr instead to save copying time
 
 	glm::dvec3 shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsrc, const glm::vec3 &intersectionNormal);
 
@@ -27,17 +27,19 @@ public:
 	/// <param name="intersectionNormal">normal at intersection point</param>
 	/// <returns></returns>
 	Color calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal);
+	Ray calculateReflection(const Ray& inRay, const Direction& intersectionNormal);
+
 
 	void AddTriangle(const Triangle t) {
 		triangleList.push_back(t);
 	}
 
 	Lightsrc sceneLight;
+	Sphere sceneSphere;
 
 private:
 
 	void createScene();
 
 	std::vector<Triangle> triangleList;
-	Sphere sceneSphere;
 };

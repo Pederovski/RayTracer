@@ -2,11 +2,11 @@
 #define _USE_MATH_DEFINES 
 #include <math.h>
 
-Color Scene::triangleIntersection(Ray& ray, int depthcounter)
+void Scene::triangleIntersection(Ray& ray, int depthcounter)
 {
 	float minimumT = NOT_FOUND; //minimum t value found => closest triangle intersection
-	Color pointSurfaceColor;
-	Direction intersectionNormal;
+	//Color pointSurfaceColor;
+	//Direction intersectionNormal;
 
 	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
 	for (int i = 0; i < triangleList.size(); i++) {
@@ -14,10 +14,9 @@ Color Scene::triangleIntersection(Ray& ray, int depthcounter)
 		if (t < minimumT) {
 			minimumT = t;
 			ray.intersectionTriangle = &triangleList[i];
-			pointSurfaceColor = ray.intersectionTriangle->color.color;
-			intersectionNormal.direction = ray.intersectionTriangle->normal.direction;
-			//pointSurfaceColor = triangleList[i].color.color;
-			//intersectionNormal.direction = triangleList[i].normal.direction;
+			ray.intersectionNormal = ray.intersectionTriangle->normal.direction;
+				//pointSurfaceColor = ray.intersectionTriangle->color.color;
+				//intersectionNormal.direction = ray.intersectionTriangle->normal.direction;
 		}
 	}
 	//save intersection point between ray and first triangle surface hit
@@ -29,14 +28,15 @@ Color Scene::triangleIntersection(Ray& ray, int depthcounter)
 	float d = sceneSphere.rayIntersection(ray);
 	if (d < minimumT) {
 		minimumT = d;
-		pointSurfaceColor = sceneSphere.color;
+			//pointSurfaceColor = sceneSphere.color;
 		ray.intersectionTriangle = nullptr;
 		ray.intersectionPoint = ray.startPoint.position + minimumT * glm::normalize(ray.endPoint.position - ray.startPoint.position);
-		intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
+		ray.intersectionNormal = glm::normalize(ray.intersectionPoint - sceneSphere.center);
+		//intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
 	}
 
-	if (minimumT == NOT_FOUND) {
-		std::cout << "No intersection with triangle or sphere \n";
+	//if (minimumT == NOT_FOUND) {
+		//std::cout << "No intersection with triangle or sphere \n";
 	//	Direction intersectDir{ ray.intersectionPoint - ray.startPoint.position };
 	//	Direction eyeToplane{ glm::normalize(ray.endPoint.position - ray.startPoint.position) };
 	//	intersectDir.print();
@@ -49,14 +49,14 @@ Color Scene::triangleIntersection(Ray& ray, int depthcounter)
 	//	//	ray.endPoint.position.y << " " << ray.endPoint.position.z << " ";
 	//	//std::cout << "ray direction " << dir.x << " " << dir.y << " " << dir.z << "\n\n";
 	//	//return Color{ 255,255,255 };
-	}
+	//}
 
 
 
 	////if we intersected the sphere, calc normal in that position.
 
 	//color reflected color
-	Color reflectedColor = calculateReflection(1, depthcounter, ray, intersectionNormal);
+			//Color reflectedColor = calculateReflection(1, depthcounter, ray, intersectionNormal);
 
 	//calc reflection ray if obj
 	//btree.insertreflection(currentNode, reflectionray);
@@ -67,13 +67,13 @@ Color Scene::triangleIntersection(Ray& ray, int depthcounter)
 	//scene.triangleIntersection(refractionray);
 
 	//Shoot shadow ray 
-	glm::dvec3 Lr = shootShadowRay(ray.intersectionPoint, sceneLight, intersectionNormal.direction);
+			//glm::dvec3 Lr = shootShadowRay(ray.intersectionPoint, sceneLight, intersectionNormal.direction);
 
 	//multiply surface color with emitted radiosity
-	pointSurfaceColor.color = glm::vec3(pointSurfaceColor.color.r * Lr.r, pointSurfaceColor.color.g * Lr.g, pointSurfaceColor.color.b * Lr.b);
+			//pointSurfaceColor.color = glm::vec3(pointSurfaceColor.color.r * Lr.r, pointSurfaceColor.color.g * Lr.g, pointSurfaceColor.color.b * Lr.b);
 	
 	//add shadowray color with reflected color
-	return pointSurfaceColor.color + reflectedColor.color;
+			//return pointSurfaceColor.color + reflectedColor.color;
 }
 
 glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsrc, const glm::vec3 &intersectionNormal) {
@@ -89,6 +89,23 @@ glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsr
 	glm::dvec3 Lr = rho * irradiance / M_PI;
 
 	return Lr;
+}
+
+Ray Scene::calculateReflection(const Ray& inRay, const Direction& intersectionNormal) {
+	//calc new ray dir with reflection law
+	glm::vec3 startp = inRay.startPoint.position;
+	glm::vec3 endp = inRay.endPoint.position;
+	float offset = 0.1f;
+	glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);
+
+	glm::vec3 inRayDir = correctedIntersectionEndPoint - startp;
+	inRayDir = glm::normalize(inRayDir);
+	glm::vec3 reflectedRay = inRayDir - 2 * (glm::dot(inRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
+	reflectedRay = glm::normalize(reflectedRay);
+
+	glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * reflectedRay;
+	glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
+	return Ray{ rayStartPoint, rayEndPoint };
 }
 
 Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal) {
@@ -114,7 +131,7 @@ Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, 
 
 			//shoot ray into scene with recursion
 			++depth;
-			Color reflectiveColor = triangleIntersection(R, depth);
+			Color reflectiveColor; // triangleIntersection(R, depth);
 
 			return reflectiveColor;
 		}
