@@ -66,7 +66,7 @@ void Camera::render(Scene &_scene)
 	for (int i = 0; i < SIZE; i++) {
 		for (int j = 0; j < SIZE; j++) {
 			Color c = cameraplane[index(i,j)].c;
-			img.SetPixel(i, j, EasyBMP::RGBColor(c.color.r * 255, c.color.g * 255, c.color.b * 255));
+			img.SetPixel(i, j, EasyBMP::RGBColor(c.color.r * 255.99, c.color.g * 255.99, c.color.b * 255.99));
 		}
 	}
 	//easy write image to file

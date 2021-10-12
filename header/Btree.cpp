@@ -6,6 +6,7 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 		return;
 
 	scene.triangleIntersection(ray);
+
 	//check if ray intersected with mirror
 	//intersected triangle
 	if (ray.intersectionTriangle != nullptr) {

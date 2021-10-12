@@ -2,6 +2,12 @@
 #define _USE_MATH_DEFINES 
 #include <math.h>
 
+/// <summary>
+/// Computes the intersection between a ray and scene objects, ie triangles and speheres. 
+/// Stores there intersection point and intersection normal in the ray
+/// </summary>
+/// <param name="ray"></param>
+/// <param name="depthcounter"></param>
 void Scene::triangleIntersection(Ray& ray, int depthcounter)
 {
 	float minimumT = NOT_FOUND; //minimum t value found => closest triangle intersection
@@ -10,7 +16,7 @@ void Scene::triangleIntersection(Ray& ray, int depthcounter)
 
 	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
 	for (int i = 0; i < triangleList.size(); i++) {
-		float t = triangleList[i].rayIntersection(ray); //här får vi ut massa tvärden
+		float t = triangleList[i].rayIntersection(ray); //här får vi ut massa t-värden
 		if (t < minimumT) {
 			minimumT = t;
 			ray.intersectionTriangle = &triangleList[i];
@@ -110,6 +116,7 @@ Ray Scene::calculateReflection(const Ray& inRay, const Direction& intersectionNo
 }
 
 Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal) {
+	std::cout << " Should not be called \n";
 	bool spheremirror = sceneSphere.brdf.isWall();
 	if (depth < nrofIterations) {
 		//intersecteded triangle or sphere that is not a wall

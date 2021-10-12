@@ -25,6 +25,7 @@
     <ClCompile Include="header\Scene.cpp" />
     <ClCompile Include="header\Triangle.cpp" />
     <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="Tetrahedron.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyBMP.hpp" />

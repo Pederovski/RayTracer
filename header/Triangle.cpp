@@ -24,7 +24,7 @@ float Triangle::rayIntersection(Ray& ray)
 
 	float epsilon = 1e-5;
 
-	if (u > -epsilon && v > -epsilon && (u + v) < 1 + epsilon) {
+	if (u > -epsilon && v > -epsilon && t > -epsilon && (u + v) < 1 + epsilon) {
 		//auto res = ray.startPoint.position + t * (ray.endPoint.position - ray.startPoint.position);
 		//glm::vec3 point = (1 - u - v) * v1.position + u * v2.position + v * v3.position;
 		//std::cout << "Point from triangle intersect " << point.x << " " << point.y << " " << point.z << '\n';

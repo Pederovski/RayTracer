@@ -2,7 +2,7 @@
 #include "header/Vertex.h"
 #include "header/Triangle.h"
 #include "header/Color.h"
-#include <list>
+#include <vector>
 
 class Tetrahedron {
 public:
@@ -22,7 +22,11 @@ public:
 		sides.push_back(t3);
 		sides.push_back(t4);
 
-
+		t1.print();
+		t2.print();
+		t3.print();
+		t4.print();
 	}
-	std::list<Triangle> sides;
+
+	std::vector<Triangle> sides;
 };

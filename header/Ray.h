@@ -8,7 +8,7 @@ class Ray {
 public:
 	
 	Ray(const Vertex& start, const Vertex& end/*,const Triangle* _loc = nullptr */, const Color& c = Color{}) :
-		startPoint{ start }, endPoint{ end }, rayColor{ c } {
+		startPoint{ start }, endPoint{ end }, rayColor{ c }, intersectionNormal{0,0,0}, intersectionPoint{0,0,0} {
 		/*endPointLocation = _loc ? new Triangle{*_loc} : nullptr ; */
 	}
 	Ray() = default;
