@@ -38,7 +38,7 @@ public:
 
 	void insertRefraction(Node* parent, Ray& ray);
 	void insertReflection(Node* parent, Ray& ray);
-	void createTree(Node* ptr, Ray& ray);
+	void createTree(Node* ptr, Ray& ray, int c = 0);
 	Color computeColor(Node* node);
 	
 	Node* root;

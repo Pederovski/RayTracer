@@ -94,12 +94,13 @@ glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsr
 Ray Scene::calculateReflection(const Ray& inRay, const Direction& intersectionNormal) {
 	//calc new ray dir with reflection law
 	glm::vec3 startp = inRay.startPoint.position;
-	glm::vec3 endp = inRay.endPoint.position;
-	float offset = 0.1f;
-	glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);
+	glm::vec3 endp = inRay.intersectionPoint;
+	float offset = 1e-4;
+	glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp); //calc offset end point in the other direction
 
 	glm::vec3 inRayDir = correctedIntersectionEndPoint - startp;
 	inRayDir = glm::normalize(inRayDir);
+	//same as glm::reflect(inRayDir, intersectionNormal.direction)
 	glm::vec3 reflectedRay = inRayDir - 2 * (glm::dot(inRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
 	reflectedRay = glm::normalize(reflectedRay);
 
@@ -117,14 +118,15 @@ Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, 
 			//calculate new ray dir with reflection law
 			glm::vec3 startp = ray.startPoint.position;
 			glm::vec3 endp = ray.intersectionPoint;
-			float offset = 0.01f;
+			float offset = 0.1f;
 			glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);  //going in the opposite direction
 
 			glm::vec3 incomingRayDir = correctedIntersectionEndPoint - ray.startPoint.position;
 			incomingRayDir = glm::normalize(incomingRayDir);
 			glm::vec3 ReflectedRay = incomingRayDir - 2 * (glm::dot(incomingRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
 			ReflectedRay = glm::normalize(ReflectedRay);
-
+			
+			
 			glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * ReflectedRay;
 			glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
 			Ray R{ rayStartPoint, rayEndPoint };
@@ -159,8 +161,8 @@ void Scene::createScene()
 	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 255, 0 }); //green
 
 	//Bottom right diagonal
-	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }); //red
-	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0 }); //red
+	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }, false); //red
+	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0 }, false); //red
 
 	//Bottom left diagonal
 	Triangle t13 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ -3,0,-5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }); //blue

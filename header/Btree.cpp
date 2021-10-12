@@ -1,33 +1,45 @@
 #include "Btree.h"
 
-void Btree::createTree(Node* ptr, Ray& ray)
+void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 {
+	if (depthcounter > 10) //max 10 reflections
+		return;
+
 	scene.triangleIntersection(ray);
 	//check if ray intersected with mirror
 	//intersected triangle
 	if (ray.intersectionTriangle != nullptr) {
 		if (!ray.intersectionTriangle->brdf.isWall()) { 
 			//calculated reflected ray
-			Ray reflectedRay = scene.calculateReflection(ray, ray.intersectionTriangle->normal);
-			//insert the reflected ray into tree
-			//Node* child = insert(ptr, ptr->reflection, reflectedRay);
-			insertReflection(ptr, reflectedRay);
-			ptr->reflection->ray.importance = ptr->ray.importance * 0.8f;
-			//call create tree with child node and reflected ray
-			createTree(ptr->reflection, reflectedRay);
+			Ray reflectedRay = scene.calculateReflection(ray, ray.intersectionNormal);
+
+			reflectedRay.importance = ptr->ray.importance * 0.8f;
+			if (reflectedRay.importance > 1e-2) {
+				int c = ++depthcounter;
+				//insert the reflected ray into tree
+				//Node* child = insert(ptr, ptr->reflection, reflectedRay);
+				insertReflection(ptr, reflectedRay);
+				//call create tree with child node and reflected ray
+
+				createTree(ptr->reflection, ptr->reflection->ray, c);
+			}
 		}
 	}
 	//intersected sphere
 	else {
 		//do same shit as above 
-		Direction normal{ glm::normalize(ray.intersectionPoint - scene.sceneSphere.center) };
-		//calculated reflected ray
 		Ray reflectedRay = scene.calculateReflection(ray, ray.intersectionNormal);
-		//insert the reflected ray into tree
-		insertReflection(ptr, reflectedRay);
-		ptr->reflection->ray.importance = ptr->ray.importance * 0.8f;
-		//call create tree with child node and reflected ray
-		createTree(ptr->reflection, reflectedRay);
+
+		reflectedRay.importance = ptr->ray.importance * 0.8f;
+		if (reflectedRay.importance > 1e-2) {
+			int c = ++depthcounter;
+			//insert the reflected ray into tree
+			//Node* child = insert(ptr, ptr->reflection, reflectedRay);
+			insertReflection(ptr, reflectedRay);
+			//call create tree with child node and reflected ray
+
+			createTree(ptr->reflection, ptr->reflection->ray, c);
+		}
 	}
 }
 
@@ -35,7 +47,7 @@ Color Btree::computeColor(Node* node)
 {	
 	Color radianceleftchild, radiancerightchild;
 	double leftimportance = 0.0, rightimportance = 0.0;
-	//parent radiance = left importance * radiance  +     * radiance / parent importance + scalar * shadowray contribution
+	//parent radiance = left importance * radiance  + right importance * radiance / parent importance + scalar * shadowray contribution
 	if (node->reflection != nullptr) {
 		radianceleftchild = computeColor(node->reflection);
 		leftimportance = node->reflection->ray.importance;
@@ -58,7 +70,7 @@ Color Btree::computeColor(Node* node)
 		surfaceColor.color.g * Lr.color.g, surfaceColor.color.b * Lr.color.b);
 	//how impactful shadow ray color is 
 	double D = 0.1f; 
-	Color radiance = (leftimportance * radianceleftchild.color + rightimportance * radiancerightchild.color) * (1.0 / node->ray.importance) + D * surfaceColor.color;
+	Color radiance = (leftimportance * radianceleftchild.color + rightimportance * radiancerightchild.color) / node->ray.importance + D * surfaceColor.color;
 	
 	return radiance;
 }
