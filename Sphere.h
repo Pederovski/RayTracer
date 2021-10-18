@@ -8,9 +8,10 @@ class Sphere {
 public:
 	Sphere() = default;
 
-	Sphere(const glm::vec3& c, float r, const Color& clr, const BRDF& _brdf) :
-		center{ c }, radius{ r }, color{ clr }, brdf{ _brdf }  {}
-
+	Sphere(const glm::vec3& c, float r, const Color& clr, const Material* _material) :
+		center{ c }, radius{ r }, color{ clr } {
+		material = _material->clone();
+	}
 
 	float rayIntersection(const Ray& ray){
 		glm::vec3 dir = ray.endPoint.position - ray.startPoint.position;
@@ -43,11 +44,14 @@ public:
 		////	return std::numeric_limits<float>::max();
 		////else
 		//	return smallest;
+	}
 
+	~Sphere() {
+		//delete material;
 	}
 
 	glm::vec3 center;
 	float radius;
 	Color color;
-	BRDF brdf;
+	Material* material;
 };

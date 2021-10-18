@@ -5,6 +5,7 @@
 #include "Color.h"
 #include "Ray.h"
 #include <iostream>
+#include "Material.h"
 
 const float NOT_FOUND = std::numeric_limits<float>::max();
 
@@ -21,21 +22,43 @@ struct BRDF {
 
 class Triangle {
 public:
-	Triangle() = default;
+	Triangle() = default; // : color{}, normal{}, brdf{}, v1{}, v2{}, v3{} {}
 
-	Triangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const Color& color, const BRDF _brdf = BRDF{}) :
-		v1{ vertex1 }, v2{ vertex2 }, v3{ vertex3 }, color{ color }, brdf{ _brdf } {
+	Triangle(const Vertex& vertex1, const Vertex& vertex2, const Vertex& vertex3, const Color& color, const Material* _material) :
+		v1{ vertex1 }, v2{ vertex2 }, v3{ vertex3 }, color{ color } {
+		material = _material->clone();
 		//Calculate normal direction by cross product of the triangle sides
 		auto p1 = v1.position;
 		auto p2 = v2.position;
 		auto p3 = v3.position;
 		glm::vec3 u = p2 - p1;
 		glm::vec3 v = p3 - p1;
-		
+
 		normal.direction = glm::cross(u, v);
 
 		normal.direction = glm::normalize(normal.direction);
 		//print();
+	}
+
+	~Triangle() {
+		delete material;
+		material = nullptr;
+	}
+
+	Triangle(const Triangle& r) : v1{ r.v1 }, v2{ r.v2 }, v3{ r.v3 }, normal{ r.normal }, color{ r.color } {
+		material = r.material->clone();
+	}
+
+	//copy swap idiom
+	Triangle& operator=(Triangle rhs) {
+		std::swap(material, rhs.material);
+		std::swap(v1, rhs.v1);
+		std::swap(v2, rhs.v2);
+		std::swap(v3, rhs.v3);
+		std::swap(normal, rhs.normal);
+		std::swap(color, rhs.color);
+
+		return *this;
 	}
 
 	/// <summary>
@@ -55,9 +78,11 @@ public:
 	
 	Color color;
 	Direction normal;
-	BRDF brdf;
+	//Material lambertian;
+	Material* material;
+	Vertex v1, v2, v3;
 
 
 private:
-	Vertex v1, v2, v3;
+	
 };

@@ -33,6 +33,9 @@
     <ClCompile Include="header\Btree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="header\Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EasyBMP.hpp">
@@ -69,6 +72,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="header\Btree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="header\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

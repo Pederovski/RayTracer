@@ -1,18 +1,17 @@
 #include "Scene.h"
 #define _USE_MATH_DEFINES 
 #include <math.h>
+#include "Material.h"
 
 /// <summary>
 /// Computes the intersection between a ray and scene objects, ie triangles and speheres. 
 /// Stores there intersection point and intersection normal in the ray
 /// </summary>
 /// <param name="ray"></param>
-/// <param name="depthcounter"></param>
-void Scene::triangleIntersection(Ray& ray, int depthcounter)
+/// <param name="depthcounter"></param>s
+float Scene::triangleIntersection(Ray& ray)
 {
 	float minimumT = NOT_FOUND; //minimum t value found => closest triangle intersection
-	//Color pointSurfaceColor;
-	//Direction intersectionNormal;
 
 	//Loopar alla trianglar i listan och kallar på rayintersection(ray)
 	for (int i = 0; i < triangleList.size(); i++) {
@@ -21,75 +20,104 @@ void Scene::triangleIntersection(Ray& ray, int depthcounter)
 			minimumT = t;
 			ray.intersectionTriangle = &triangleList[i];
 			ray.intersectionNormal = ray.intersectionTriangle->normal.direction;
-				//pointSurfaceColor = ray.intersectionTriangle->color.color;
-				//intersectionNormal.direction = ray.intersectionTriangle->normal.direction;
 		}
 	}
 	//save intersection point between ray and first triangle surface hit
 	ray.intersectionPoint = ray.startPoint.position + minimumT * (ray.endPoint.position - ray.startPoint.position);
-	//std::cout << " Intesection point main: " << ray.intersectionPoint.x << " " << ray.intersectionPoint.y << " " << ray.intersectionPoint.z
-	//	<< '\n';
 
 	//loopa igenom alla spheres (en atm sphere)
 	float d = sceneSphere.rayIntersection(ray);
 	if (d < minimumT) {
 		minimumT = d;
-			//pointSurfaceColor = sceneSphere.color;
 		ray.intersectionTriangle = nullptr;
 		ray.intersectionPoint = ray.startPoint.position + minimumT * glm::normalize(ray.endPoint.position - ray.startPoint.position);
 		ray.intersectionNormal = glm::normalize(ray.intersectionPoint - sceneSphere.center);
-		//intersectionNormal.direction = glm::normalize(ray.intersectionPoint - sceneSphere.center);
 	}
 
-	//if (minimumT == NOT_FOUND) {
-		//std::cout << "No intersection with triangle or sphere \n";
-	//	Direction intersectDir{ ray.intersectionPoint - ray.startPoint.position };
-	//	Direction eyeToplane{ glm::normalize(ray.endPoint.position - ray.startPoint.position) };
-	//	intersectDir.print();
-	//	eyeToplane.print();
-	//	std::cout << '\n';
-	//	//glm::vec3 dir = ray.endPoint.position - ray.startPoint.position;
-	//	//std::cout << " ray startpoint " << ray.startPoint.position.x << " " <<
-	//	//	ray.startPoint.position.y<< " " << ray.startPoint.position.z << " ";
-	//	//std::cout << " ray endpoint " << ray.endPoint.position.x << " " <<
-	//	//	ray.endPoint.position.y << " " << ray.endPoint.position.z << " ";
-	//	//std::cout << "ray direction " << dir.x << " " << dir.y << " " << dir.z << "\n\n";
-	//	//return Color{ 255,255,255 };
+	return minimumT;
+}
+
+/// <summary>
+/// Checks if shadow ray is blocked by another object
+/// </summary>
+/// <param name="shadowray"></param>
+/// <returns></returns>
+float Scene::visibilityTest(Ray& shadowray) {
+
+	glm::vec3 p = shadowray.startPoint.position;
+	//if (p.x < 7.1f && p.x > 6.0f && p.y < -5.0f && p.z < -4.8f) {
+	//	//std::cout << "there should be a intersection with sphere here and we should be in shadow\n";
 	//}
+	float t = triangleIntersection(shadowray);
 
+	//A litle cheat to cast shadows from a sphere, if we intersect the sphere the point is in shadow, 
+	//the triangle intersection 't' value will always be between 0-1 and
+	//the 'd' value from sphere intersection is not mapped to the same intervall ->
+	//the condition for sphere will never be take into account and we get no shadows from the sphere
+	float d = sceneSphere.rayIntersection(shadowray);
+	if (d < std::numeric_limits<float>::max()) {
+		return 0.0f;
+	}
+	float epsilon = 1e-5;
 
+	if (t < 0 || t > 1 + epsilon)
+		return 0.0f;
 
-	////if we intersected the sphere, calc normal in that position.
-
-	//color reflected color
-			//Color reflectedColor = calculateReflection(1, depthcounter, ray, intersectionNormal);
-
-	//calc reflection ray if obj
-	//btree.insertreflection(currentNode, reflectionray);
-	//scene.triangleIntersection(reflectionray, currnode = currenode->reflection)
-
-	//calc refraction ray if transparent
-	//btree.insertrefractionray(currentNode, refractionray);
-	//scene.triangleIntersection(refractionray);
-
-	//Shoot shadow ray 
-			//glm::dvec3 Lr = shootShadowRay(ray.intersectionPoint, sceneLight, intersectionNormal.direction);
-
-	//multiply surface color with emitted radiosity
-			//pointSurfaceColor.color = glm::vec3(pointSurfaceColor.color.r * Lr.r, pointSurfaceColor.color.g * Lr.g, pointSurfaceColor.color.b * Lr.b);
+	//intresserade av om vi får en intersection mellan start punkt till ljuskällan som är mindre än 1
+	//då blir vår shadowaray blockerad av ett annat object.
+	//om t är mindre än 1 -> blockerad -> return 0 annars return 1
+	if (1 - t < epsilon)
+		return 1.0f;
 	
-	//add shadowray color with reflected color
-			//return pointSurfaceColor.color + reflectedColor.color;
+	return 0.0f;
+}
+
+glm::dvec3 Scene::computeDirectIllumination(const Ray& ray) {
+
+	//Number of shadow rays
+	int N = 10;
+	double sum = 0.0f;
+
+	for (int i = 0; i < N; ++i) {
+
+		//Compute shadow ray
+		glm::vec3 endpointshadowray = sceneLight.randomPosition();
+		glm::vec3 startpointshadowray = ray.intersectionPoint;
+		glm::vec3 shadowray = endpointshadowray - startpointshadowray;
+		Ray sray{ startpointshadowray, endpointshadowray };
+
+		//Compute geometric term
+		float slen = glm::length(shadowray);
+		float costhetain = glm::dot(shadowray, ray.intersectionNormal) / slen;
+		float costhetaL = glm::dot(-shadowray, sceneLight.normal) / slen;
+		float G = costhetain * costhetaL / glm::dot(shadowray, shadowray);
+
+		//Compute Visibility
+		float V = visibilityTest(sray);
+		
+		sum += V * G / (1.0f / 9.0f);
+	}
+
+	glm::dvec3 sigma = glm::dvec3{ 0.8, 0.8, 0.8 };
+	// sigma / pi is the brdf of the lambertian surface
+	glm::dvec3 estimator = (sigma / M_PI) * (sceneLight.radiance * (1.0 / N)) * sum;
+
+	//std::cout << "radiance: " << sceneLight.radiance.r << " " << sceneLight.radiance.g << " " << sceneLight.radiance.b << '\n';
+	//std::cout << " estimator: " << estimator.r << " " << estimator.g << " " << estimator.b << '\n';
+
+	return estimator;
 }
 
 glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsrc, const glm::vec3 &intersectionNormal) {
-	glm::vec3 direction = lightsrc.position - start; //direction from intersectionpoint to light src
+
+	glm::vec3 endpointOnLightsrc = lightsrc.randomPosition();
+	glm::vec3 direction = endpointOnLightsrc - start; //direction from intersectionpoint to light src
 	float r = glm::length(direction); //length of shadowray 
 	//inclination angle, negative values are clamped to 0
 	double cosTheta = std::max((double)glm::dot(direction, intersectionNormal) / r, 0.0);
-	double solidAngle = lightsrc.crossSection / (r * r);
+	//double solidAngle = lightsrc.crossSection / (r * r);
 
-	glm::dvec3 irradiance = solidAngle * lightsrc.radiance * cosTheta;
+	glm::dvec3 irradiance = /*solidAngle * */ lightsrc.radiance * cosTheta;
 	double rho = 1.0; //reflectivity constant? - perhaps should come from bdrf
 	//Emitted radiosity
 	glm::dvec3 Lr = rho * irradiance / M_PI;
@@ -97,95 +125,96 @@ glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsr
 	return Lr;
 }
 
-Ray Scene::calculateReflection(const Ray& inRay, const Direction& intersectionNormal) {
-	//calc new ray dir with reflection law
-	glm::vec3 startp = inRay.startPoint.position;
-	glm::vec3 endp = inRay.intersectionPoint;
-	float offset = 1e-4;
-	glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp); //calc offset end point in the other direction
+//Ray Scene::calculateReflection(const Ray& inRay, const Direction& intersectionNormal) {
+	////calc new ray dir with reflection law
+	//glm::vec3 startp = inRay.startPoint.position;
+	//glm::vec3 endp = inRay.intersectionPoint;
+	//float offset = 1e-4;
+	//glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp); //calc offset end point in the other direction
 
-	glm::vec3 inRayDir = correctedIntersectionEndPoint - startp;
-	inRayDir = glm::normalize(inRayDir);
-	//same as glm::reflect(inRayDir, intersectionNormal.direction)
-	glm::vec3 reflectedRay = inRayDir - 2 * (glm::dot(inRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
-	reflectedRay = glm::normalize(reflectedRay);
+	//glm::vec3 inRayDir = correctedIntersectionEndPoint - startp;
+	//inRayDir = glm::normalize(inRayDir);
+	////same as glm::reflect(inRayDir, intersectionNormal.direction)
+	//glm::vec3 reflectedRay = inRayDir - 2 * (glm::dot(inRayDir, inRay.intersectionNormal)) * inRay.intersectionNormal;
+	//reflectedRay = glm::normalize(reflectedRay);
 
-	glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * reflectedRay;
-	glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
-	return Ray{ rayStartPoint, rayEndPoint };
-}
+	//glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * reflectedRay;
+	//glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
+	//return Ray{ rayStartPoint, rayEndPoint };
+//}
 
-Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal) {
-	std::cout << " Should not be called \n";
-	bool spheremirror = sceneSphere.brdf.isWall();
-	if (depth < nrofIterations) {
-		//intersecteded triangle or sphere that is not a wall
-		if ((ray.intersectionTriangle != nullptr && !ray.intersectionTriangle->brdf.isWall()) ||
-			(spheremirror && ray.intersectionTriangle == nullptr)) { //obj hit is perfect reflector surface
-			//calculate new ray dir with reflection law
-			glm::vec3 startp = ray.startPoint.position;
-			glm::vec3 endp = ray.intersectionPoint;
-			float offset = 0.1f;
-			glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);  //going in the opposite direction
+//Color Scene::calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal) {
+	//std::cout << " Should not be called \n";
+	//bool spheremirror = sceneSphere.brdf.isWall();
+	//if (depth < nrofIterations) {
+	//	//intersecteded triangle or sphere that is not a wall
+	//	if ((ray.intersectionTriangle != nullptr && !ray.intersectionTriangle->brdf.isWall()) ||
+	//		(spheremirror && ray.intersectionTriangle == nullptr)) { //obj hit is perfect reflector surface
+	//		//calculate new ray dir with reflection law
+	//		glm::vec3 startp = ray.startPoint.position;
+	//		glm::vec3 endp = ray.intersectionPoint;
+	//		float offset = 0.1f;
+	//		glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp);  //going in the opposite direction
 
-			glm::vec3 incomingRayDir = correctedIntersectionEndPoint - ray.startPoint.position;
-			incomingRayDir = glm::normalize(incomingRayDir);
-			glm::vec3 ReflectedRay = incomingRayDir - 2 * (glm::dot(incomingRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
-			ReflectedRay = glm::normalize(ReflectedRay);
-			
-			
-			glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * ReflectedRay;
-			glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
-			Ray R{ rayStartPoint, rayEndPoint };
+	//		glm::vec3 incomingRayDir = correctedIntersectionEndPoint - ray.startPoint.position;
+	//		incomingRayDir = glm::normalize(incomingRayDir);
+	//		glm::vec3 ReflectedRay = incomingRayDir - 2 * (glm::dot(incomingRayDir, intersectionNormal.direction)) * intersectionNormal.direction;
+	//		ReflectedRay = glm::normalize(ReflectedRay);
+	//		
+	//		
+	//		glm::vec3 rayEndPoint = correctedIntersectionEndPoint + 2.0f * ReflectedRay;
+	//		glm::vec3 rayStartPoint = correctedIntersectionEndPoint;
+	//		Ray R{ rayStartPoint, rayEndPoint };
 
-			//shoot ray into scene with recursion
-			++depth;
-			Color reflectiveColor; // triangleIntersection(R, depth);
+	//		//shoot ray into scene with recursion
+	//		++depth;
+	//		Color reflectiveColor; // triangleIntersection(R, depth);
 
-			return reflectiveColor;
-		}
-	}
-	return Color{ 0,0,0 };
-}
+	//		return reflectiveColor;
+	//	}
+	//}
+	//return Color{ 0,0,0 };
+//}
 
 
 void Scene::createScene()
 {
+	Material* diffuseWall = new LambertianMaterial{ 1.0f };
 	//golv
-	Triangle t1 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ -3,0,-5 }, Color{ 255, 255, 255 }); //left
-	Triangle t2 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 10,6,-5 }, Color{ 255, 255, 255 }); //right 
-	Triangle t3 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ 0,-6,-5 }, Color{ 255, 255, 255 }); //bottomleft
-	Triangle t4 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 0 ,6,-5 }, Color{ 255, 255, 255 }); //topright
+	Triangle t1 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ -3,0,-5 }, Color{ 255, 255, 255 }, diffuseWall); //left
+	Triangle t2 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 10,6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //right 
+	Triangle t3 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ 0,-6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //bottomleft
+	Triangle t4 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 0 ,6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //topright
 
 	//Tak
-	Triangle t5 = Triangle(Vertex{ 0 ,-6,5 }, Vertex{ -3,0,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }); //left
-	Triangle t6 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 10,6,5 }, Vertex{ 13,0,5 }, Color{ 240, 151, 17 }); //right 
-	Triangle t7 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0,-6,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }); //bottomleft
-	Triangle t8 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0 ,6,5 }, Vertex{ 10,6,5 }, Color{ 240, 151, 17 }); //topright
+	Triangle t5 = Triangle(Vertex{ 0 ,-6,5 }, Vertex{ -3,0,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //left
+	Triangle t6 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 10,6,5 }, Vertex{ 13,0,5 }, Color{ 240, 151, 17 }, diffuseWall); //right 
+	Triangle t7 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0,-6,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //bottomleft
+	Triangle t8 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0 ,6,5 }, Vertex{ 10,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //topright
 
 	//bottom wall
-	Triangle t9  = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 10,-6,-5 }, Color{ 0, 255, 0 }); //green
-	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 255, 0 }); //green
+	Triangle t9  = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 10,-6,-5 }, Color{ 0, 255, 0 }, diffuseWall); //green
+	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 255, 0 }, diffuseWall); //green
 
 	//Bottom right diagonal
-	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }, false); //red
-	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0 }, false); //red
+	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }, diffuseWall); //red
+	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0 }, diffuseWall); //red
 
 	//Bottom left diagonal
-	Triangle t13 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ -3,0,-5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }); //blue
-	Triangle t14 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ -3,0, 5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }); //blue
+	Triangle t13 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ -3,0,-5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }, diffuseWall); //blue
+	Triangle t14 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ -3,0, 5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }, diffuseWall); //blue
 
 	//Top wall
-	Triangle t15 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 10, 6, 5 }, Color{ 255, 255, 0 }); //yellow
-	Triangle t16 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6, 5 }, Vertex{ 0 , 6, 5 }, Color{ 255, 255, 0 }); //yelllw
+	Triangle t15 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 10, 6, 5 }, Color{ 255, 255, 0 }, diffuseWall); //yellow
+	Triangle t16 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6, 5 }, Vertex{ 0 , 6, 5 }, Color{ 255, 255, 0 }, diffuseWall); //yelllw
 
 	//Top right diagona
-	Triangle t17 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 255}); //purple
-	Triangle t18 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 10, 6, 5 }, Color{ 255, 0, 255}); //purple
+	Triangle t17 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 255}, diffuseWall); //purple
+	Triangle t18 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 10, 6, 5 }, Color{ 255, 0, 255}, diffuseWall); //purple
 
 	//Top left diagonal
-	Triangle t19 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6,-5 }, Vertex{ 0,6,5 }, Color{ 0, 255, 255 }); //cyan
-	Triangle t20 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6, 5 }, Vertex{-3,0,5 }, Color{ 0, 255, 255 }); //cyan
+	Triangle t19 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6,-5 }, Vertex{ 0,6,5 }, Color{ 0, 255, 255 }, diffuseWall); //cyan
+	Triangle t20 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6, 5 }, Vertex{-3,0,5 }, Color{ 0, 255, 255 }, diffuseWall); //cyan
 
 	triangleList.push_back(t1);
 	triangleList.push_back(t2);
@@ -208,13 +237,17 @@ void Scene::createScene()
 	triangleList.push_back(t19);
 	triangleList.push_back(t20);
 
-	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2, Color{ 0, 150, 200 }, true);
+	Material* mirror = new PerfectReflectorMaterial{ 1.0f };
+	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2, Color{ 0, 0, 0 }, mirror);
 
-	Tetrahedron T{ Color{ 253, 127, 249 }, false };
+	Tetrahedron T{ Color{ 253, 127, 249 }, mirror };
 	for (const Triangle& t : T.sides)
 	{
 		triangleList.push_back(t);
 	}
 	
-	sceneLight = Lightsrc{ 0.2, glm::dvec3{1, 1, 1}, glm::vec3{5, 0, 5} };
+
+	//sceneLight = Lightsrc{ 0.2, glm::dvec3{1, 1, 1}, glm::vec3{5, 0, 5} };
+	delete diffuseWall;
+	delete mirror;
 }

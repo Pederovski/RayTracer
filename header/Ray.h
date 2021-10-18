@@ -38,7 +38,7 @@ public:
 	//ref to triangle on which endpoint is located
 	Triangle* intersectionTriangle = nullptr;
 	//eventuellt inkludera importance i ray obj
-	double importance = 1;
+	glm::vec3 importance = glm::vec3(1, 1, 1);
 
 private:
 

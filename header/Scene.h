@@ -10,11 +10,11 @@
 
 class Scene {
 public:
-	Scene() {
+	Scene() : sceneLight{ Lightsrc{ glm::vec3{5, 0, 5} } } {
 		createScene();
 	}
 
-	void triangleIntersection(Ray& ray, int c = 0); //return ref or ptr instead to save copying time
+	float triangleIntersection(Ray& ray); //return ref or ptr instead to save copying time
 
 	glm::dvec3 shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsrc, const glm::vec3 &intersectionNormal);
 
@@ -28,7 +28,9 @@ public:
 	/// <returns></returns>
 	Color calculateReflection(int nrofIterations, int depth, const Ray& ray, const Direction& intersectionNormal);
 	Ray calculateReflection(const Ray& inRay, const Direction& intersectionNormal);
-
+	glm::dvec3 computeDirectIllumination(const Ray& ray);
+	
+	float visibilityTest(Ray& shadowray);
 
 	void AddTriangle(const Triangle t) {
 		triangleList.push_back(t);
