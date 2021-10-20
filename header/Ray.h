@@ -8,7 +8,7 @@ class Ray {
 public:
 	
 	Ray(const Vertex& start, const Vertex& end/*,const Triangle* _loc = nullptr */, const Color& c = Color{}) :
-		startPoint{ start }, endPoint{ end }, rayColor{ c }, intersectionNormal{0,0,0}, intersectionPoint{0,0,0} {
+		startPoint{ start }, endPoint{ end }, rayColor{ c }, intersectionNormal{ 0,0,0 }, intersectionPoint{ 0,0,0 }, importance{ 1, 1,1 } {
 		/*endPointLocation = _loc ? new Triangle{*_loc} : nullptr ; */
 	}
 	Ray() = default;
@@ -38,7 +38,7 @@ public:
 	//ref to triangle on which endpoint is located
 	Triangle* intersectionTriangle = nullptr;
 	//eventuellt inkludera importance i ray obj
-	glm::vec3 importance = glm::vec3(1, 1, 1);
+	glm::vec3 importance;
 
 private:
 

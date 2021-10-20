@@ -2,13 +2,18 @@
 
 void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 {
+	scene.triangleIntersection(ray);
+
 	int maxdepth = 2;
 	if (depthcounter > maxdepth)
 		return;
 
-	scene.triangleIntersection(ray);
 
-	//check if ray intersected with triangle or mirror
+	//bool terminateRay = checkRayTermination(ray);
+	//if (terminateRay)
+	//	return;
+
+	//check if ray intersected with triangle or sphere
 	//intersected triangle
 	if (ray.intersectionTriangle != nullptr) {
 		//calculated reflected ray
@@ -17,13 +22,10 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 		//lambertian -> random direction + russian roulette 
 		//transparent obj -> få två rays 
 
-		bool terminateRay = checkRayTermination(ray);
-		if (terminateRay)
-			return;
 
 		//lowering importance should be done with brdf? 
 		//reflectedRay.importance = ptr->ray.importance * 0.8f;
-		if (glm::length(reflectedRay.importance) > 1e-2f) {
+		//if (glm::length(reflectedRay.importance) > 1e-2f) {
 			int c = ++depthcounter;
 			//insert the reflected ray into tree
 			//Node* child = insert(ptr, ptr->reflection, reflectedRay);
@@ -31,7 +33,7 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 			//call create tree with child node and reflected ray
 
 			createTree(ptr->reflection, ptr->reflection->ray, c);
-		}
+		//}
 	}
 	//intersected sphere
 	else {
@@ -40,7 +42,7 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 		Ray reflectedRay = scene.sceneSphere.material->computeReflectionRay(ray);
 
 		//reflectedRay.importance = ptr->ray.importance * 0.8f;
-		if (glm::length(reflectedRay.importance) > 1e-2f ) {
+		//if (glm::length(reflectedRay.importance) > 1e-2f ) {
 			int c = ++depthcounter;
 			//insert the reflected ray into tree
 			//Node* child = insert(ptr, ptr->reflection, reflectedRay);
@@ -48,7 +50,7 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 			//call create tree with child node and reflected ray
 
 			createTree(ptr->reflection, ptr->reflection->ray, c);
-		}
+		//}
 	}
 }
 
@@ -90,7 +92,7 @@ bool Btree::checkRayTermination(Ray ray) {
 
 Color Btree::computeColor(Node* node)
 {	
-	Color radianceleftchild, radiancerightchild;
+	Color radianceleftchild{ 0,0,0 }, radiancerightchild{ 0,0,0 };
 	glm::dvec3 leftimportance = glm::dvec3(0.0), rightimportance = glm::dvec3(0.0);
 	//parent radiance = left importance * radiance  + right importance * radiance / parent importance + scalar * shadowray contribution
 	if (node->reflection != nullptr) {
@@ -101,11 +103,12 @@ Color Btree::computeColor(Node* node)
 		radiancerightchild = computeColor(node->refraction);
 		rightimportance = node->refraction->ray.importance;
 	}
+
 	//shoot shadow ray to introduce extra radiance
 	//Color Lr = scene.shootShadowRay(node->ray.intersectionPoint, scene.sceneLight, node->ray.intersectionNormal);
 	Color Lr = scene.computeDirectIllumination(node->ray);
 	
-	Color surfaceColor{};
+	Color surfaceColor{0,0,0};
 	if (node->ray.intersectionTriangle != nullptr) {
 		surfaceColor = node->ray.intersectionTriangle->color;
 	}

@@ -188,40 +188,40 @@ void Scene::createScene()
 {
 	Material* diffuseWall = new LambertianMaterial{ 1.0f };
 	//golv
-	Triangle t1 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ -3,0,-5 }, Color{ 255, 255, 255 }, diffuseWall); //left
-	Triangle t2 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 10,6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //right 
-	Triangle t3 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ 0,-6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //bottomleft
-	Triangle t4 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 0 ,6,-5 }, Color{ 255, 255, 255 }, diffuseWall); //topright
+	Triangle t1 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ -3,0,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //left
+	Triangle t2 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 10,6,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //right 
+	Triangle t3 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ 0,-6,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //bottomleft
+	Triangle t4 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 0 ,6,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //topright
 
 	//Tak
-	Triangle t5 = Triangle(Vertex{ 0 ,-6,5 }, Vertex{ -3,0,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //left
-	Triangle t6 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 10,6,5 }, Vertex{ 13,0,5 }, Color{ 240, 151, 17 }, diffuseWall); //right 
-	Triangle t7 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0,-6,5 }, Vertex{ 0 ,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //bottomleft
-	Triangle t8 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0 ,6,5 }, Vertex{ 10,6,5 }, Color{ 240, 151, 17 }, diffuseWall); //topright
+	Triangle t5 = Triangle(Vertex{ 0 ,-6,5 }, Vertex{ -3,0,5 }, Vertex{ 0 ,6,5 }, Color{ 0.94, 0.59, 0.06 }, diffuseWall); //left
+	Triangle t6 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 10,6,5 }, Vertex{ 13,0,5 }, Color{ 0.94, 0.59, 0.06 }, diffuseWall); //right 
+	Triangle t7 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0,-6,5 }, Vertex{ 0 ,6,5 }, Color{ 0.94, 0.59, 0.06 }, diffuseWall); //bottomleft
+	Triangle t8 = Triangle(Vertex{ 10,-6,5 }, Vertex{ 0 ,6,5 }, Vertex{ 10,6,5 }, Color{ 0.94, 0.59, 0.06 }, diffuseWall); //topright
 
 	//bottom wall
-	Triangle t9  = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 10,-6,-5 }, Color{ 0, 255, 0 }, diffuseWall); //green
-	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 255, 0 }, diffuseWall); //green
+	Triangle t9  = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 10,-6,-5 }, Color{ 0, 1.0, 0 }, diffuseWall); //green
+	Triangle t10 = Triangle(Vertex{ 0,-6,-5 }, Vertex{ 0 ,-6,5 }, Vertex{ 10,-6, 5 }, Color{ 0, 1.0, 0 }, diffuseWall); //green
 
 	//Bottom right diagonal
-	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 255, 0, 0 }, diffuseWall); //red
-	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 0 }, diffuseWall); //red
+	Triangle t11 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 13, 0,-5 }, Color{ 1.0, 0, 0 }, diffuseWall); //red
+	Triangle t12 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 10,-6,5 }, Vertex{ 13, 0, 5 }, Color{ 1.0, 0, 0 }, diffuseWall); //red
 
 	//Bottom left diagonal
-	Triangle t13 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ -3,0,-5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }, diffuseWall); //blue
-	Triangle t14 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ -3,0, 5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 255 }, diffuseWall); //blue
+	Triangle t13 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ -3,0,-5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 1.0 }, diffuseWall); //blue
+	Triangle t14 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ -3,0, 5 }, Vertex{ 0, -6, 5 }, Color{ 0, 0, 1.0 }, diffuseWall); //blue
 
 	//Top wall
-	Triangle t15 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 10, 6, 5 }, Color{ 255, 255, 0 }, diffuseWall); //yellow
-	Triangle t16 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6, 5 }, Vertex{ 0 , 6, 5 }, Color{ 255, 255, 0 }, diffuseWall); //yelllw
+	Triangle t15 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6,-5 }, Vertex{ 10, 6, 5 }, Color{ 1.0, 1.0, 0 }, diffuseWall); //yellow
+	Triangle t16 = Triangle(Vertex{ 0, 6,-5 }, Vertex{ 10,6, 5 }, Vertex{ 0 , 6, 5 }, Color{ 1.0, 1.0, 0 }, diffuseWall); //yelllw
 
 	//Top right diagona
-	Triangle t17 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 13, 0, 5 }, Color{ 255, 0, 255}, diffuseWall); //purple
-	Triangle t18 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 10, 6, 5 }, Color{ 255, 0, 255}, diffuseWall); //purple
+	Triangle t17 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 13, 0, 5 }, Color{ 1.0, 0, 1.0 }, diffuseWall); //purple
+	Triangle t18 = Triangle(Vertex{ 10, 6,-5 }, Vertex{ 13,0, 5 }, Vertex{ 10, 6, 5 }, Color{ 1.0, 0, 1.0 }, diffuseWall); //purple
 
 	//Top left diagonal
-	Triangle t19 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6,-5 }, Vertex{ 0,6,5 }, Color{ 0, 255, 255 }, diffuseWall); //cyan
-	Triangle t20 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6, 5 }, Vertex{-3,0,5 }, Color{ 0, 255, 255 }, diffuseWall); //cyan
+	Triangle t19 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6,-5 }, Vertex{ 0,6,5 }, Color{ 0, 1.0, 1.0 }, diffuseWall); //cyan
+	Triangle t20 = Triangle(Vertex{ -3, 0,-5 }, Vertex{ 0, 6, 5 }, Vertex{-3,0,5 }, Color{ 0, 1.0, 1.0 }, diffuseWall); //cyan
 
 	triangleList.push_back(t1);
 	triangleList.push_back(t2);
@@ -245,9 +245,9 @@ void Scene::createScene()
 	triangleList.push_back(t20);
 
 	Material* mirror = new PerfectReflectorMaterial{ 1.0f };
-	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2, Color{ 0, 0, 0 }, mirror);
+	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2.0f, Color{ 0, 0, 0 }, mirror);
 
-	Tetrahedron T{ Color{ 253, 127, 249 }, mirror };
+	Tetrahedron T{ Color{ 0.99, 0.49, 0.97 }, mirror };
 	for (const Triangle& t : T.sides)
 	{
 		triangleList.push_back(t);

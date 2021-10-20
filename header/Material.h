@@ -48,10 +48,12 @@ public:
 
 		glm::vec4 endPosWorldCoords = LTW * endPos;
 		Ray outRandomRay = Ray{ startPos, {endPosWorldCoords.x, endPosWorldCoords.y, endPosWorldCoords.z} };
+
 		//outgoing ray = F * incommingRay given in 
 		float F = M_PI * sigma * std::cos(theta) * std::sin(theta);
-		F /= (1.0f - (1.0f - sigma));
+		//F /= (1.0f - (1.0f - sigma)); //if we use russian roulette termination we compensate the one-sample estimator with (1-alpha)^-1 lecture 10 slide 23
 		outRandomRay.importance = inRay.importance * F;
+		outRandomRay.rayColor.color = inRay.rayColor.color * (double)sigma; //lecture 10 slide 22
 
 		return outRandomRay;
 	}

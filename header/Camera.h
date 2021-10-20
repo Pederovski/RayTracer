@@ -18,8 +18,8 @@ public:
 			for (int j = 0; j < SIZE; j++) {
 				//Calculate direction vector from eyepoint to the pixel
 				Vertex cameraplaneEndPoint = Vertex{ 0, j * delta - (1 - delta ), i * delta - (1 - delta) };
-				Ray dir = Ray{ useEye1 ? eye1 : eye2, cameraplaneEndPoint };
-				cameraplane.push_back(Pixel{ Color{}, dir });
+				Ray ray = Ray{ useEye1 ? eye1 : eye2, cameraplaneEndPoint };
+				cameraplane.push_back(Pixel{ Color{0,0,0}, ray });
 			}
 		}
 	}
