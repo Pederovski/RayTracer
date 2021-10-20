@@ -40,7 +40,12 @@ public:
 	void insertReflection(Node* parent, Ray& ray);
 	void createTree(Node* ptr, Ray& ray, int c = 0);
 	Color computeColor(Node* node);
-	
+	/// <summary>
+	/// Returns true if ray should be terminated
+	/// </summary>
+	/// <param name="ray"></param>
+	/// <returns></returns>
+	bool checkRayTermination(Ray ray);
 	Node* root;
 
 private:

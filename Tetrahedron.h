@@ -31,7 +31,7 @@ public:
 		t4.print();
 	}
 	~Tetrahedron() {
-		//delete material;
+		delete material;
 	}
 
 	std::vector<Triangle> sides;

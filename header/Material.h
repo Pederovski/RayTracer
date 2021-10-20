@@ -6,9 +6,14 @@
 #include "Utilities.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+enum MaterialType {
+	None, Lambertian, Mirror
+};
+
 class Material {
 public:
-	Material(float reflectivityConstant) : sigma{ reflectivityConstant } {}
+
+	Material(float reflectivityConstant, MaterialType _matType = MaterialType::None) : sigma{ reflectivityConstant }, materialType{ _matType } {}
 	//get brdf ->
 	//compute reflectionray
 	virtual Ray computeReflectionRay(const Ray& inRay) = 0;
@@ -18,7 +23,8 @@ public:
 
 	virtual Material* clone() const = 0;
 
-protected:
+	MaterialType materialType;
+
 	/// <summary>
 	/// Reflectivity consant, 0 -> piece of coal, 1 -> white plastic ball
 	/// </summary>
@@ -27,7 +33,7 @@ protected:
 
 class LambertianMaterial : public Material {
 public:
-	LambertianMaterial(float reflectionconstant) : Material{ reflectionconstant } {}
+	LambertianMaterial(float reflectionconstant) : Material{ reflectionconstant, Lambertian } {}
 
 	virtual Ray computeReflectionRay(const Ray& inRay) override {
 		//random direction azimute and inclination angle --> change to local coordinate system
@@ -43,12 +49,14 @@ public:
 		glm::vec4 endPosWorldCoords = LTW * endPos;
 		Ray outRandomRay = Ray{ startPos, {endPosWorldCoords.x, endPosWorldCoords.y, endPosWorldCoords.z} };
 		//outgoing ray = F * incommingRay given in 
-		float F = M_PI * M_PI * getBRDF() * std::cos(theta) * std::sin(theta);
-		outRandomRay.importance = F * inRay.importance;
+		float F = M_PI * sigma * std::cos(theta) * std::sin(theta);
+		F /= (1.0f - (1.0f - sigma));
+		outRandomRay.importance = inRay.importance * F;
 
 		return outRandomRay;
 	}
 	~LambertianMaterial() = default;
+
 	virtual float getBRDF() override {
 		return sigma / M_PI;
 	}
@@ -60,7 +68,7 @@ public:
 
 class PerfectReflectorMaterial : public Material {
 public:
-	PerfectReflectorMaterial(float reflectionconstant) : Material{ reflectionconstant } {}
+	PerfectReflectorMaterial(float reflectionconstant) : Material{ reflectionconstant , Mirror } {}
 
 	virtual Ray computeReflectionRay(const Ray& inRay) override {
 		//perfect reflection model
@@ -86,6 +94,7 @@ public:
 		return outReflectedRay;
 	}
 	~PerfectReflectorMaterial() = default;
+
 	virtual float getBRDF() override {
 		return 1.0f;
 	}

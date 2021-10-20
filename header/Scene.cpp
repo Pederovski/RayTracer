@@ -98,9 +98,16 @@ glm::dvec3 Scene::computeDirectIllumination(const Ray& ray) {
 		sum += V * G / (1.0f / 9.0f);
 	}
 
-	glm::dvec3 sigma = glm::dvec3{ 0.8, 0.8, 0.8 };
+	float s = 0.0f;
+	if (ray.intersectionTriangle != nullptr) {
+		s = ray.intersectionTriangle->material->getBRDF();
+	}
+	else {
+		s = sceneSphere.material->getBRDF();
+	}
+	glm::dvec3 sigma = glm::dvec3{ s, s, s };
 	// sigma / pi is the brdf of the lambertian surface
-	glm::dvec3 estimator = (sigma / M_PI) * (sceneLight.radiance * (1.0 / N)) * sum;
+	glm::dvec3 estimator = sigma * (sceneLight.radiance * (1.0 / N)) * sum;
 
 	//std::cout << "radiance: " << sceneLight.radiance.r << " " << sceneLight.radiance.g << " " << sceneLight.radiance.b << '\n';
 	//std::cout << " estimator: " << estimator.r << " " << estimator.g << " " << estimator.b << '\n';

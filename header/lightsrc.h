@@ -42,14 +42,15 @@ public:
 
 	/// <summary>
 	///Check intersection with the lightsrc returns the smallest t value on either triangle 1 or triangle  
+	/// returns true if ray intersect light src
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <returns></returns>
-	float lightsrcIntersection(Ray& ray) {
+	bool lightsrcIntersection(Ray& ray) {
 		float val1 = t1.rayIntersection(ray);
 		float val2 = t2.rayIntersection(ray);
 
-		return val1 < val2 ? val1 : val2;
+		return (val1 < NOT_FOUND || val2 < NOT_FOUND);
 	}
 
 

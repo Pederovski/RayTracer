@@ -6,7 +6,7 @@
 
 class Sphere {
 public:
-	Sphere() = default;
+	Sphere() : center{ glm::vec3{0.0f} }, radius{ 1.0f }, color{ glm::vec3{0.0f} }, material{ nullptr } {}
 
 	Sphere(const glm::vec3& c, float r, const Color& clr, const Material* _material) :
 		center{ c }, radius{ r }, color{ clr } {
