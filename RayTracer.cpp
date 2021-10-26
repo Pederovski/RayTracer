@@ -3,6 +3,8 @@
 #include "header/Vertex.h"
 #include "header/Camera.h"
 #include <chrono>
+#include <vld.h>
+
 
 int main()
 {

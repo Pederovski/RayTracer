@@ -58,9 +58,10 @@ float Scene::visibilityTest(Ray& shadowray) {
 	if (d < std::numeric_limits<float>::max()) {
 		return 0.0f;
 	}
+
 	float epsilon = 1e-5;
 
-	if (t < 0 || t > 1 + epsilon)
+	if (t < 0 + epsilon || t > 1 + epsilon)
 		return 0.0f;
 
 	//intresserade av om vi får en intersection mellan start punkt till ljuskällan som är mindre än 1
@@ -88,26 +89,41 @@ glm::dvec3 Scene::computeDirectIllumination(const Ray& ray) {
 
 		//Compute geometric term
 		float slen = glm::length(shadowray);
-		float costhetain = glm::dot(shadowray, ray.intersectionNormal) / slen;
-		float costhetaL = glm::dot(-shadowray, sceneLight.normal) / slen;
-		float G = costhetain * costhetaL / glm::dot(shadowray, shadowray);
 
+		if (slen < 1)
+			slen = 1.0f;
+
+		float costhetain = glm::dot(shadowray, ray.intersectionNormal) / slen; //should shadowray be normalized here?
+
+		float costhetaL = glm::dot(-shadowray, sceneLight.normal) / slen; //should -shadowray be normalized here?
+
+		if (costhetain < 0)
+			costhetain = 0.0f;
+
+		if (costhetaL < 0)
+			costhetaL = 0.0f;
+
+		double G = costhetain * costhetaL / glm::dot(shadowray, shadowray);
 		//Compute Visibility
-		float V = visibilityTest(sray);
+		double V = visibilityTest(sray);
+
+		//if (costhetain < 0 || costhetaL < 0) {
+		//	std::cout << "costhetain = " << costhetain << " costhetaL = " << costhetaL << " G = " << G << " V = " << V << '\n';
+		//}
 		
-		sum += V * G / (1.0f / 9.0f);
+		sum += V * G * 9.0; // / (1.0f / 9.0f); //multiply with area of lightsrc
 	}
 
-	float s = 0.0f;
+	double sigmaOverPi = 0.0f;
 	if (ray.intersectionTriangle != nullptr) {
-		s = ray.intersectionTriangle->material->getBRDF();
+		sigmaOverPi = ray.intersectionTriangle->material->getBRDF();
 	}
 	else {
-		s = sceneSphere.material->getBRDF();
+		sigmaOverPi = sceneSphere.material->getBRDF();
 	}
-	glm::dvec3 sigma = glm::dvec3{ s, s, s };
+	//glm::dvec3 sigma = glm::dvec3{ s, s, s };
 	// sigma / pi is the brdf of the lambertian surface
-	glm::dvec3 estimator = sigma * (sceneLight.radiance * (1.0 / N)) * sum;
+	glm::dvec3 estimator = sigmaOverPi * (sceneLight.radiance * (1.0 / N)) * sum;
 
 	//std::cout << "radiance: " << sceneLight.radiance.r << " " << sceneLight.radiance.g << " " << sceneLight.radiance.b << '\n';
 	//std::cout << " estimator: " << estimator.r << " " << estimator.g << " " << estimator.b << '\n';
@@ -186,7 +202,7 @@ glm::dvec3 Scene::shootShadowRay(const glm::vec3 &start, const Lightsrc &lightsr
 
 void Scene::createScene()
 {
-	Material* diffuseWall = new LambertianMaterial{ 1.0f };
+	Material* diffuseWall = new LambertianMaterial{ 0.8f };
 	//golv
 	Triangle t1 = Triangle(Vertex{ 0 ,-6,-5 }, Vertex{ 0 ,6,-5 }, Vertex{ -3,0,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //left
 	Triangle t2 = Triangle(Vertex{ 10,-6,-5 }, Vertex{ 13,0,-5 }, Vertex{ 10,6,-5 }, Color{ 1.0, 1.0, 1.0 }, diffuseWall); //right 

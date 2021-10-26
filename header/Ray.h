@@ -8,7 +8,8 @@ class Ray {
 public:
 	
 	Ray(const Vertex& start, const Vertex& end/*,const Triangle* _loc = nullptr */, const Color& c = Color{}) :
-		startPoint{ start }, endPoint{ end }, rayColor{ c }, intersectionNormal{ 0,0,0 }, intersectionPoint{ 0,0,0 }, importance{ 1, 1,1 } {
+		startPoint{ start }, endPoint{ end }, rayColor{ c }, intersectionNormal{ 0,0,0 }, intersectionPoint{ 0,0,0 },
+		importance{ 1, 1, 1 }, intersectionTriangle{ nullptr } {
 		/*endPointLocation = _loc ? new Triangle{*_loc} : nullptr ; */
 	}
 	Ray() = default;
@@ -17,6 +18,7 @@ public:
 	Ray(const Ray& r);
 
 	~Ray() {
+		//delete intersectionTriangle;
 		intersectionTriangle = nullptr; //is this memory leak? 
 	}
 

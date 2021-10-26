@@ -1,6 +1,6 @@
 #include "Triangle.h"
 
-float Triangle::rayIntersection(Ray& ray)
+float Triangle::rayIntersection(const Ray& ray) const
 {
 	glm::vec3 T = ray.startPoint.position - v1.position;
 	glm::vec3 E1 = v2.position - v1.position;

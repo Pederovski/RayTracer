@@ -7,6 +7,8 @@ std::pair<float, float> computeRandomAngles() {
 	float x = ((double)rand() / (RAND_MAX));
 	float y = ((double)rand() / (RAND_MAX));
 
+	//std::cout << "x: " << x << " y:" << y << '\n';
+
 	rho = 2.0f * M_PI * x;
 	theta = M_PI * y / 2.0f;
 
@@ -32,7 +34,7 @@ glm::mat4x4 worldToLocalMatrix(const Ray& incommingRay) {
 	//X = normalize( I - dot(I,Z) * Z
 	glm::vec3 X = glm::normalize(I - glm::dot(I, Z) * Z);
 	//Y = cross(-X, Z)
-	glm::vec3 Y = glm::cross(-X, Z);
+	glm::vec3 Y = glm::normalize(glm::cross(-X, Z));
 
 	//Translate4x4( - incommingray.intersectionpoint)
 	glm::mat4x4 identity = glm::imat4x4();
@@ -42,6 +44,7 @@ glm::mat4x4 worldToLocalMatrix(const Ray& incommingRay) {
 		0.0, 1.0, 0.0, -incommingRay.intersectionPoint.y,
 		0.0, 0.0, 1.0, -incommingRay.intersectionPoint.z,
 		0.0, 0.0, 0.0, 1.0);
+
 	//rotational4x4( X, Y, Z ) 
 	glm::mat4x4 rotation = glm::mat4x4(
 		X.x, Y.x, Z.x, 0,

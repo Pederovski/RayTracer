@@ -65,7 +65,7 @@ public:
 	/// Returns t value if there is an intersection between this triangle and the ray 
 	/// Müller trumbone algorithm
 	/// </summary>
-	float rayIntersection(Ray& ray);
+	float rayIntersection(const Ray& ray) const;
 
 	void print() {
 		std::cout <<

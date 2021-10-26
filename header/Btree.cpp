@@ -4,14 +4,14 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 {
 	scene.triangleIntersection(ray);
 
-	int maxdepth = 2;
+	int maxdepth = 20;
 	if (depthcounter > maxdepth)
 		return;
 
 
-	//bool terminateRay = checkRayTermination(ray);
-	//if (terminateRay)
-	//	return;
+	bool terminateRay = checkRayTermination(ray);
+	if (terminateRay)
+		return;
 
 	//check if ray intersected with triangle or sphere
 	//intersected triangle
@@ -54,7 +54,7 @@ void Btree::createTree(Node* ptr, Ray& ray, int depthcounter)
 	}
 }
 
-bool Btree::checkRayTermination(Ray ray) {
+bool Btree::checkRayTermination(const Ray& ray) {
 
 	//ray intersect light src -> terminate
 	if (scene.sceneLight.lightsrcIntersection(ray))
@@ -88,6 +88,8 @@ bool Btree::checkRayTermination(Ray ray) {
 		}
 		//transparent material
 	}
+
+	return false;
 }
 
 Color Btree::computeColor(Node* node)
@@ -106,20 +108,35 @@ Color Btree::computeColor(Node* node)
 
 	//shoot shadow ray to introduce extra radiance
 	//Color Lr = scene.shootShadowRay(node->ray.intersectionPoint, scene.sceneLight, node->ray.intersectionNormal);
-	Color Lr = scene.computeDirectIllumination(node->ray);
 	
+	//Color Lr = scene.computeDirectIllumination(node->ray);
+
+	if (scene.sceneLight.lightsrcIntersection(node->ray))
+		return scene.sceneLight.radiance * 0.2;
+
+	MaterialType material =  MaterialType::None;
+
 	Color surfaceColor{0,0,0};
 	if (node->ray.intersectionTriangle != nullptr) {
 		surfaceColor = node->ray.intersectionTriangle->color;
+		material = node->ray.intersectionTriangle->material->materialType;
 	}
 	else {
 		surfaceColor = scene.sceneSphere.color;
+		material = scene.sceneSphere.material->materialType;
 	}
+
+	Color Lr = Color{ 0,0,0 };
+
+	if(material == MaterialType::Lambertian)
+		Lr = scene.computeDirectIllumination(node->ray);
+
+
 	//multiply radiance with surface color
 	surfaceColor.color = glm::vec3(surfaceColor.color.r * Lr.color.r,
 		surfaceColor.color.g * Lr.color.g, surfaceColor.color.b * Lr.color.b);
 	//how impactful shadow ray color is 
-	double D = 0.01f; 
+	double D = 1.0f; 
 
 	Color radiance = Color{ glm::vec3(
 		((leftimportance.x * radianceleftchild.color.x + rightimportance.x * radiancerightchild.color.x) /

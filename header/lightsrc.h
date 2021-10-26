@@ -16,7 +16,7 @@ public:
 		Vertex v3 = Vertex(_position.x + sideLength / 2.0f, _position.y + sideLength / 2.0f, _position.z);
 		Vertex v4 = Vertex(_position.x + sideLength / 2.0f, _position.y - sideLength / 2.0f, _position.z);
 
-		Material* dummy = new PerfectReflectorMaterial{ 0.0f };
+		Material* dummy = new PerfectReflectorMaterial{ 1.0f };
 		t1 = Triangle(v1, v3, v4, radiance, dummy);
 		t2 = Triangle(v1, v2, v3, radiance, dummy);
 		normal = t1.normal.direction;
@@ -46,7 +46,7 @@ public:
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <returns></returns>
-	bool lightsrcIntersection(Ray& ray) {
+	bool lightsrcIntersection(const Ray& ray) const {
 		float val1 = t1.rayIntersection(ray);
 		float val2 = t2.rayIntersection(ray);
 

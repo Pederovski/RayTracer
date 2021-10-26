@@ -7,6 +7,7 @@
 
 
 const int SIZE = 800;
+const int NRAYS = 2;
 class Camera {
 public:
 	Camera(Vertex& e1, Vertex& e2, bool useEye1 = true) : eye1{ e1 }, eye2{ e2 } {
@@ -16,10 +17,21 @@ public:
 
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++) {
-				//Calculate direction vector from eyepoint to the pixel
-				Vertex cameraplaneEndPoint = Vertex{ 0, j * delta - (1 - delta ), i * delta - (1 - delta) };
-				Ray ray = Ray{ useEye1 ? eye1 : eye2, cameraplaneEndPoint };
-				cameraplane.push_back(Pixel{ Color{0,0,0}, ray });
+				std::vector<Ray> rays; 
+				for (int k = 0; k < NRAYS; ++k) {
+					//Calculate direction vector from eyepoint to the pixel
+					float x = (double)rand() / RAND_MAX;
+					float y = (double)rand() / RAND_MAX;
+
+					x = x * delta - (delta / 2.0f);
+					y = y * delta - (delta / 2.0f);
+
+					Vertex cameraplaneEndPoint = Vertex{ 0, j * delta - (1 - delta / 2.0f) + x, i * delta - (1 - delta / 2.0f) + y };
+					Ray ray = Ray{ useEye1 ? eye1 : eye2, cameraplaneEndPoint };
+
+					rays.push_back(ray);
+				}
+				cameraplane.push_back(Pixel{ Color{0,0,0}, rays });
 			}
 		}
 	}

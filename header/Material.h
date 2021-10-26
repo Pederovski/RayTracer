@@ -51,8 +51,9 @@ public:
 
 		//outgoing ray = F * incommingRay given in 
 		float F = M_PI * sigma * std::cos(theta) * std::sin(theta);
+		float alpha = 1.0f - sigma;
 		//F /= (1.0f - (1.0f - sigma)); //if we use russian roulette termination we compensate the one-sample estimator with (1-alpha)^-1 lecture 10 slide 23
-		outRandomRay.importance = inRay.importance * F;
+		outRandomRay.importance = inRay.importance * F;// / (1.0f - alpha); //lecture 9 slide 17
 		outRandomRay.rayColor.color = inRay.rayColor.color * (double)sigma; //lecture 10 slide 22
 
 		return outRandomRay;
@@ -77,13 +78,13 @@ public:
 		//calc new ray dir with reflection law
 		glm::vec3 startp = inRay.startPoint.position;
 		glm::vec3 endp = inRay.intersectionPoint;
-		float offset = 1e-4;
+		float offset = 1e-3;
 		glm::vec3 correctedIntersectionEndPoint = endp + offset * (startp - endp); //calc offset end point in the other direction
 
 		glm::vec3 inRayDir = correctedIntersectionEndPoint - startp;
 		inRayDir = glm::normalize(inRayDir);
 
-		//same as glm::reflect(inRayDir, intersectionNormal.direction)
+		//same as glm::reflect(inRabyDir, intersectionNormal.direction)
 		glm::vec3 reflectedRay = inRayDir - 2 * (glm::dot(inRayDir, inRay.intersectionNormal)) * inRay.intersectionNormal;
 		reflectedRay = glm::normalize(reflectedRay);
 
@@ -92,6 +93,7 @@ public:
 
 		Ray outReflectedRay = Ray{ rayStartPoint, rayEndPoint };
 		outReflectedRay.importance = inRay.importance;
+		outReflectedRay.rayColor.color = inRay.rayColor.color; //lecture 10 slide 22
 
 		return outReflectedRay;
 	}

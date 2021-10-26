@@ -45,7 +45,7 @@ public:
 	/// </summary>
 	/// <param name="ray"></param>
 	/// <returns></returns>
-	bool checkRayTermination(Ray ray);
+	bool checkRayTermination(const Ray& ray);
 	Node* root;
 
 private:

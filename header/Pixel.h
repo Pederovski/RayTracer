@@ -2,12 +2,13 @@
 
 #include "Color.h"
 #include "Ray.h"
+#include <vector>
 
 class Pixel {
 public:
-	Pixel(const Color&  color, const Ray& ray) :
-		c{ color }, r{ ray } {}
+	Pixel(const Color&  color, const std::vector<Ray>& rays) :
+		c{ color }, r{ rays } {}
 
 	Color c;
-	Ray r;
+	std::vector<Ray> r;
 };
