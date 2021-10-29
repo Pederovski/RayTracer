@@ -52,7 +52,7 @@ public:
 		//outgoing ray = F * incommingRay given in 
 		float F = M_PI * sigma * std::cos(theta) * std::sin(theta);
 		float alpha = 1.0f - sigma;
-		//F /= (1.0f - (1.0f - sigma)); //if we use russian roulette termination we compensate the one-sample estimator with (1-alpha)^-1 lecture 10 slide 23
+		//F /= (1.0f - alpha); //if we use russian roulette termination we compensate the one-sample estimator with (1-alpha)^-1 lecture 10 slide 23
 		outRandomRay.importance = inRay.importance * F;// / (1.0f - alpha); //lecture 9 slide 17
 		outRandomRay.rayColor.color = inRay.rayColor.color * (double)sigma; //lecture 10 slide 22
 
@@ -109,5 +109,9 @@ public:
 };
 
 class TransparentMaterial : Material {
+
+};
+
+class LightMaterial : Material {
 
 };

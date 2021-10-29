@@ -63,7 +63,7 @@ public:
 	glm::dvec3 radiance{ L0, L0, L0 };
 	glm::vec3 normal;
 
+	Triangle t1, t2;
 private:
 	float sideLength = 3.0f;
-	Triangle t1, t2;
 };

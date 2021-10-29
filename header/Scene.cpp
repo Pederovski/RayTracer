@@ -22,15 +22,17 @@ float Scene::triangleIntersection(Ray& ray)
 			ray.intersectionNormal = ray.intersectionTriangle->normal.direction;
 		}
 	}
+
+	//float offset = 1e-3;
 	//save intersection point between ray and first triangle surface hit
-	ray.intersectionPoint = ray.startPoint.position + minimumT * (ray.endPoint.position - ray.startPoint.position);
+	ray.intersectionPoint = ray.startPoint.position + (minimumT) * (ray.endPoint.position - ray.startPoint.position);
 
 	//loopa igenom alla spheres (en atm sphere)
 	float d = sceneSphere.rayIntersection(ray);
 	if (d < minimumT) {
 		minimumT = d;
 		ray.intersectionTriangle = nullptr;
-		ray.intersectionPoint = ray.startPoint.position + minimumT * glm::normalize(ray.endPoint.position - ray.startPoint.position);
+		ray.intersectionPoint = ray.startPoint.position + (minimumT) * glm::normalize(ray.endPoint.position - ray.startPoint.position);
 		ray.intersectionNormal = glm::normalize(ray.intersectionPoint - sceneSphere.center);
 	}
 
@@ -259,6 +261,9 @@ void Scene::createScene()
 	triangleList.push_back(t18);
 	triangleList.push_back(t19);
 	triangleList.push_back(t20);
+	//triangleList.push_back(sceneLight.t1);
+	//triangleList.push_back(sceneLight.t2);
+
 
 	Material* mirror = new PerfectReflectorMaterial{ 1.0f };
 	sceneSphere = Sphere(glm::vec3{ 6, -3, 0 }, 2.0f, Color{ 0, 0, 0 }, mirror);

@@ -37,7 +37,7 @@ void Camera::render(Scene &_scene)
 			cameraplane[index(i, j)].c = colorSum;
 
 		}
-		//std::cout << i << " rows finished" << '\n';
+		std::cout << i << " rows finished" << '\n';
 	}
 
 	//Square the color values before finding the maximum r,g,b value and then do the scaling between 0-1 

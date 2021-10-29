@@ -111,8 +111,6 @@ Color Btree::computeColor(Node* node)
 	
 	//Color Lr = scene.computeDirectIllumination(node->ray);
 
-	if (scene.sceneLight.lightsrcIntersection(node->ray))
-		return scene.sceneLight.radiance * 0.2;
 
 	MaterialType material =  MaterialType::None;
 
@@ -124,6 +122,13 @@ Color Btree::computeColor(Node* node)
 	else {
 		surfaceColor = scene.sceneSphere.color;
 		material = scene.sceneSphere.material->materialType;
+	}
+
+	if (scene.sceneLight.lightsrcIntersection(node->ray)) {
+		double len = glm::length(node->ray.intersectionPoint - node->ray.startPoint.position);
+		if (len < 1)
+			std::cout << "len: " << len << '\n';
+		return scene.sceneLight.radiance / (len * len);
 	}
 
 	Color Lr = Color{ 0,0,0 };
@@ -145,6 +150,8 @@ Color Btree::computeColor(Node* node)
 			node->ray.importance.y + D * surfaceColor.color.y),
 		((leftimportance.z * radianceleftchild.color.z + rightimportance.z * radiancerightchild.color.z) /
 			node->ray.importance.z + D * surfaceColor.color.z)) };
+	
+
 	
 	return radiance;
 }

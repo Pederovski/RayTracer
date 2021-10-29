@@ -7,7 +7,7 @@
 
 
 const int SIZE = 800;
-const int NRAYS = 2;
+const int NRAYS = 16;
 class Camera {
 public:
 	Camera(Vertex& e1, Vertex& e2, bool useEye1 = true) : eye1{ e1 }, eye2{ e2 } {
